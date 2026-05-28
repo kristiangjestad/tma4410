@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMA4410 — Relevante eksamensoppgaver</title>
+<style>
+  :root {
+    --bg: #f9f8f6;
+    --surface: #ffffff;
+    --surface2: #f3f2ef;
+    --border: #e4e2dc;
+    --border2: #ccc9c0;
+    --text: #1a1a18;
+    --text2: #5c5b56;
+    --text3: #9b9a94;
+    --accent: #2d5be3;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header { margin-bottom: 36px; }
+  header h1 { font-size: 26px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 4px; }
+  header p { color: var(--text2); font-size: 14px; }
+  header .meta { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+  header .badge-stat {
+    font-size: 12px; font-weight: 600; padding: 4px 10px;
+    border-radius: 20px; background: var(--surface2); color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  /* ── Controls bar ── */
+  .controls {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .controls-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 14px; }
+  .controls-row:last-child { margin-bottom: 0; }
+  .ctrl-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 180px; }
+  .ctrl-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); }
+  select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c5b56' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+  }
+  select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .search-wrap { flex: 2; min-width: 220px; }
+  .search-wrap input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid var(--border2);
+    border-radius: 7px;
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 14px;
+  }
+  .search-wrap { position: relative; }
+  .search-icon {
+    position: absolute; left: 11px; top: 31px;
+    color: var(--text3); pointer-events: none; font-size: 15px;
+  }
+  .search-wrap input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill {
+    font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px;
+    border: 1px solid var(--border2); cursor: pointer;
+    background: var(--surface2); color: var(--text2);
+    transition: all .12s; white-space: nowrap;
+  }
+  .pill:hover { border-color: var(--border2); background: var(--border); color: var(--text); }
+  .pill.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .pill.t-lin.active  { background: #4338ca; border-color: #4338ca; color: #fff; }
+  .pill.t-ind.active  { background: #0d7a5c; border-color: #0d7a5c; color: #fff; }
+  .pill.t-ode.active  { background: #b45309; border-color: #b45309; color: #fff; }
+  .pill.t-num.active  { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+  .pill.t-rek.active  { background: #b91c1c; border-color: #b91c1c; color: #fff; }
+  .pill.t-fou.active  { background: #166534; border-color: #166534; color: #fff; }
+
+  .results-info {
+    font-size: 13px; color: var(--text3); margin-bottom: 16px;
+    padding: 0 2px;
+  }
+
+  /* ── Sections ── */
+  .section { margin-bottom: 32px; }
+  .section-head {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--text3);
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+
+  /* ── Cards ── */
+  .cards-grid { display: grid; gap: 10px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 12px;
+    align-items: start;
+    transition: box-shadow .12s, border-color .12s;
+  }
+  .card:hover { box-shadow: var(--shadow); border-color: var(--border2); }
+  .card.hidden { display: none; }
+
+  .card-left { display: flex; flex-direction: column; gap: 6px; padding-top: 1px; }
+  .fagkode {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--text3);
+  }
+  .year { font-size: 13px; font-weight: 600; color: var(--text2); }
+
+  .badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+    padding: 3px 8px; border-radius: 5px; white-space: nowrap;
+    margin-top: 2px;
+  }
+  .b-lin { background: #eef2ff; color: #4338ca; }
+  .b-ind { background: #ecfdf5; color: #0d7a5c; }
+  .b-ode { background: #fffbeb; color: #b45309; }
+  .b-num { background: #eff6ff; color: #1d4ed8; }
+  .b-rek { background: #fef2f2; color: #b91c1c; }
+  .b-fou { background: #f0fdf4; color: #166534; }
+
+  .card-right {}
+  .card-title {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    margin-bottom: 3px; line-height: 1.4;
+  }
+  .card-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 7px; }
+  .tag {
+    font-size: 11px; padding: 2px 7px; border-radius: 5px;
+    background: var(--surface2); color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 20px; padding: 14px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); }
+  .leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── Empty state ── */
+  .empty { text-align: center; padding: 48px 24px; color: var(--text3); font-size: 14px; display: none; }
+  .empty.show { display: block; }
+
+  @media (max-width: 600px) {
+    .card { grid-template-columns: 1fr; }
+    .card-left { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .fagkode { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>TMA4410 — Relevante eksamensoppgaver</h1>
+    <p>Filtrert fra TMA4110/4115, TMA4130 og TMA4100 basert på ukenes nøkkelbegreper</p>
+    <div class="meta">
+      <span class="badge-stat">23 eksamener lest</span>
+      <span class="badge-stat" id="total-count">— oppgaver totalt</span>
+    </div>
+  </header>
+
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#4338ca"></div>Lineær algebra (uke 2–5)</div>
+    <div class="leg"><div class="leg-dot" style="background:#0d7a5c"></div>Indreproduktrom (uke 6–7)</div>
+    <div class="leg"><div class="leg-dot" style="background:#b45309"></div>Diff.lign. (uke 8)</div>
+    <div class="leg"><div class="leg-dot" style="background:#1d4ed8"></div>Numeriske metoder (uke 9–10)</div>
+    <div class="leg"><div class="leg-dot" style="background:#b91c1c"></div>Rekker (uke 11–12)</div>
+    <div class="leg"><div class="leg-dot" style="background:#166534"></div>Fourierrekker/PDE (uke 13–16)</div>
+  </div>
+
+  <div class="controls">
+    <div class="controls-row">
+      <div class="ctrl-group search-wrap">
+        <div class="ctrl-label">Søk</div>
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search" placeholder="Søk i oppgaver, begreper…">
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Fagkode</div>
+        <select id="fag-filter">
+          <option value="all">Alle fagkoder</option>
+          <option value="tma4110">TMA4110/4115 — Matematikk 3</option>
+          <option value="tma4130">TMA4130 — Matematikk 4N</option>
+          <option value="tma4100">TMA4100 — Matematikk 1</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Eksamen</div>
+        <select id="exam-filter">
+          <option value="all">Alle eksamener</option>
+        </select>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Uke</div>
+        <select id="week-filter">
+          <option value="all">Alle uker</option>
+          <option value="2">Uke 2 — Vektorrom I</option>
+          <option value="3">Uke 3 — Vektorrom II</option>
+          <option value="4">Uke 4 — Lineærtransformasjoner I</option>
+          <option value="5">Uke 5 — Lineærtransformasjoner II</option>
+          <option value="6">Uke 6 — Indreproduktrom I</option>
+          <option value="7">Uke 7 — Indreproduktrom II</option>
+          <option value="8">Uke 8 — Differensialligninger I</option>
+          <option value="9">Uke 9 — Differensialligninger II</option>
+          <option value="10">Uke 10 — Differensialligninger III</option>
+          <option value="11">Uke 11 — Rekker I</option>
+          <option value="12">Uke 12 — Rekker II</option>
+          <option value="13">Uke 13 — Fourierrekker I</option>
+          <option value="15">Uke 15/16 — Fourierrekker II</option>
+        </select>
+      </div>
+    </div>
+    <div class="controls-row">
+      <div class="ctrl-label" style="padding-top:2px;white-space:nowrap">Tema:</div>
+      <div class="filter-pills" id="topic-pills">
+        <button class="pill active" data-topic="all">Alle temaer</button>
+        <button class="pill t-lin" data-topic="lin">Lineær algebra</button>
+        <button class="pill t-ind" data-topic="ind">Indreproduktrom</button>
+        <button class="pill t-ode" data-topic="ode">Diff.lign.</button>
+        <button class="pill t-num" data-topic="num">Numeriske metoder</button>
+        <button class="pill t-rek" data-topic="rek">Rekker</button>
+        <button class="pill t-fou" data-topic="fou">Fourierrekker/PDE</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-info" id="results-info"></div>
+  <div class="empty" id="empty-state">Ingen oppgaver matcher filtrene. Prøv å nullstille et filter.</div>
+
+  <div id="content"></div>
+
+</div>
+
+<script>
+const DATA = [
+  // ── TMA4110/4115 ──
+  { fag:"tma4110", exam:"TMA4110 H2024", oppg:"Opp. 2", topics:["lin"],
+    title:"Matriserepresentasjon av T med hensyn på basis B",
+    desc:"T(u), T(v), T(w) gitt i basisvektorer → matriserepresentasjon [T]_B; finn T(u−3w+2v) i B-koordinater; kjerne og bilde, injektiv/surjektiv",
+    tags:["Uke 4–5","Matriserepresentasjon","Rangteorem","Koordinatvektorer"],
+    uker:["4","5"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2024", oppg:"Opp. 4", topics:["lin"],
+    title:"T : ℂ → M₂ som lineærtransformasjon",
+    desc:"Vis at T er lineærtransformasjon; T bevarer multiplikasjon (T(zw) = T(z)T(w)); skriv T(z) som skalering · rotasjon",
+    tags:["Uke 4","Lineærtransformasjon","Isomorfi","Komplekse tall"],
+    uker:["4"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2024", oppg:"Opp. 5", topics:["lin","ind"],
+    title:"Lineær uavhengighet + ortogonal projeksjon i ℝ³",
+    desc:"Vis at u, v, w er lineært uavhengige; korteste avstand fra u til V = Sp{v,w}; skisse av u, v, w, V og Proj_V(u)",
+    tags:["Uke 2+5","Lin. uavhengighet","Projeksjon","Ortogonalt komplement"],
+    uker:["2","5"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2024", oppg:"Opp. 6", topics:["ind"],
+    title:"Indreprodukt i P₂ og Gram-Schmidt",
+    desc:"Vis at ⟨p,q⟩ = p(0)q(0)+p(1)q(1)+p(2)q(2) er indreprodukt i P₂; finn ortogonal basis for U = Sp{1−x, −1+x²}",
+    tags:["Uke 6–7","Gram-Schmidt","Indreproduktrom","P₂"],
+    uker:["6","7"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2024", oppg:"Opp. 7", topics:["ind"],
+    title:"Interpolasjon og minste kvadrater",
+    desc:"Finn andregradspolynom gjennom (1,4),(2,1),(−1,0); bruk minste kvadraters metode til å finne beste linje",
+    tags:["Uke 7","Minste kvadrater","Approksimasjonsteorem"],
+    uker:["7"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2024", oppg:"Opp. 9", topics:["ode"],
+    title:"Diagonalisering og matrisepotens",
+    desc:"Er A = [2 3; 2 1] diagonaliserbar? Bruk diagonalisering til å beregne A⁵",
+    tags:["Uke 8","Diagonalisering","Egenverdier"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2024", oppg:"Opp. 10", topics:["ode"],
+    title:"2. ordens lineær ODE med partikulær løsning",
+    desc:"Generell løsning av y″ − 2y′ + y = −3cos(t); løs for y(0)=2, y′(0)=0",
+    tags:["Uke 8","2. ordens ODE","Partikulær løsning"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2025", oppg:"Opp. 5", topics:["lin"],
+    title:"Finn standardmatrisen til T gitt tre bilder",
+    desc:"T : ℝ³ → ℝ³ gitt ved T([0,2,1]ᵀ), T([0,2,2]ᵀ), T([2,1,1]ᵀ); finn A og avgjør injektiv/surjektiv",
+    tags:["Uke 4","Lineærtransformasjon","Standardmatrise","Injektiv/surjektiv"],
+    uker:["4"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2025", oppg:"Opp. 6", topics:["ind"],
+    title:"Indreprodukt ⟨x,y⟩ = x₁y₁+4x₂y₂+9x₃y₃ og Gram-Schmidt",
+    desc:"Vis at dette er et indreprodukt på ℝ³; finn ortogonal basis for Sp{[2,−1,1]ᵀ, [−1,2,−1]ᵀ}",
+    tags:["Uke 5–7","Indreprodukt","Gram-Schmidt"],
+    uker:["5","6","7"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2025", oppg:"Opp. 7", topics:["ode"],
+    title:"Diagonalisering og lineært ODE-system",
+    desc:"Diagonaliser A = [a b−a; 0 b], a≠b; uttrykk Aᵏ; løs y′ = [−2 5; 0 3]y, y(0) = [2,−4]ᵀ",
+    tags:["Uke 8","Lin. ODE-system","Diagonalisering"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2025", oppg:"Opp. 9", topics:["lin"],
+    title:"Koordinatvektor i basis S for P₂(ℝ)",
+    desc:"S = {x²+1, 6x²+x+2, 3x²+x} er basis; finn koordinatvektor til q(x)=x²+2x+3 m.h.p. S",
+    tags:["Uke 4","Koordinatvektorer","Basisbytte"],
+    uker:["4"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2025", oppg:"Opp. 10", topics:["ind"],
+    title:"Ortogonale vektorer er lineært uavhengige (bevis)",
+    desc:"Vis at v₁ ≠ 0 og v₂ ≠ 0 og ⟨v₁,v₂⟩=0 ⇒ v₁, v₂ lineært uavhengige",
+    tags:["Uke 2+6","Ortogonalitet","Lin. uavhengighet","Bevis"],
+    uker:["2","6"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2025", oppg:"Opp. 4", topics:["lin","ind"],
+    title:"Nullrom, kolonnerom og Gram-Schmidt",
+    desc:"Basis for Null(A), dim Col(A) og dim Null(Aᵀ); ortogonal basis for Col(A)",
+    tags:["Uke 3+7","Rangteorem","Gram-Schmidt","Matriserom"],
+    uker:["3","7"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2025", oppg:"Opp. 5", topics:["lin"],
+    title:"Underrom i M₂ₓ₃ og T : U → ℝ³ surjektiv men ikke injektiv",
+    desc:"Vis at U er underrom; vis at T er surjektiv (rang) men ikke injektiv (kjerne ≠ {0})",
+    tags:["Uke 3–4","Underrom","Rangteorem","Surjektiv/injektiv"],
+    uker:["3","4"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2025", oppg:"Opp. 7", topics:["ode"],
+    title:"Lineært ODE-system med initialbetingelse",
+    desc:"Løs y′ = [−3 −2; 4 6]y, y(0)=[4,−2]ᵀ via egenverdier og egenvektorer",
+    tags:["Uke 8","Lin. ODE-system"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2025", oppg:"Opp. 9", topics:["ode"],
+    title:"Diagonalisering for A = [a −b; b a] med komplekse egenverdier",
+    desc:"Finn P og D (over ℂ) slik at A = PDP⁻¹; b ≠ 0",
+    tags:["Uke 8","Diagonalisering","Komplekse egenverdier"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2025", oppg:"Opp. 10", topics:["ode"],
+    title:"A⁴ = A og A reelt diagonaliserbar ⇒ A² = A (bevis)",
+    desc:"Bruk diagonalisering til å vise at A⁴=A og A diagonaliserbar innebærer A²=A",
+    tags:["Uke 8","Diagonalisering","Egenverdier","Bevis"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2024", oppg:"Opp. 2", topics:["ind"],
+    title:"Nullrom og ortogonal basis for radrommet via Gram-Schmidt",
+    desc:"Basis for Null(M); ortogonal basis for Col(Mᵀ) = radrommet til M",
+    tags:["Uke 3+7","Gram-Schmidt","Ortogonalt komplement"],
+    uker:["3","7"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2024", oppg:"Opp. 6", topics:["lin"],
+    title:"T : M₂ → M₂ — kjerne og injektiv/surjektiv",
+    desc:"Vis at T(A) = [a 0; 0 d] er lineærtransformasjon; bestem ker T; injektiv/surjektiv?",
+    tags:["Uke 4","Kjerne og bilde","Rangteorem"],
+    uker:["4"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2024", oppg:"Opp. 7", topics:["ode"],
+    title:"Diagonalisering av stokastisk matrise; A⁴² og A⁴³",
+    desc:"Finn P, D slik at A = PDP⁻¹; beregn A⁴² og A⁴³; er A regulær?",
+    tags:["Uke 8","Diagonalisering","Egenverdier"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2024", oppg:"Opp. 10", topics:["ind"],
+    title:"Vis direkte at ⟨u,v⟩ = uᵀAv er indreprodukt i ℝ²",
+    desc:"A = [2 −1; −1 4]; vis linearitet, symmetri og positivitet fra definisjoner",
+    tags:["Uke 5–6","Indreprodukt","Positivt definitt"],
+    uker:["5","6"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2024", oppg:"Opp. 4", topics:["lin"],
+    title:"Finn T([1,0]) og T([0,1]) gitt to bilder av T : ℝ² → ℝ³",
+    desc:"T([1,1]ᵀ) = [2,−2,0]ᵀ og T([1,−1]ᵀ) = [0,−4,10]ᵀ; bruk linearitet",
+    tags:["Uke 4","Lineærtransformasjon","Koordinatvektorer"],
+    uker:["4"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2024", oppg:"Opp. 5", topics:["ind"],
+    title:"Gram-Schmidt → ortonormal basis; projeksjon",
+    desc:"Ortonormal basis for V = Sp{[2,1,2]ᵀ,[1,2,1]ᵀ}; punkt i V med kortest avstand til x",
+    tags:["Uke 7","Gram-Schmidt","Projeksjon","Approksimasjonsteorem"],
+    uker:["7"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2024", oppg:"Opp. 9", topics:["ode"],
+    title:"Diagonalisering og løsning av ODE-system",
+    desc:"Finn P, D slik at A = PDP⁻¹; løs IVP y′ = Ay(t), y(0) = [2,0,1]ᵀ",
+    tags:["Uke 8","Diagonalisering","Lin. ODE-system"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2023", oppg:"Opp. 1", topics:["lin"],
+    title:"Basis for Col A og Null A; dim Null(Aᵀ) via rangteoremet",
+    desc:"Gausselim. → basis for Col A og Null A; bruk rangteorem for Aᵀ",
+    tags:["Uke 3–4","Rangteorem","Matriserom"],
+    uker:["3","4"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2023", oppg:"Opp. 2", topics:["ode"],
+    title:"Lineært ODE-system IVP",
+    desc:"x₁′=x₁+2x₂, x₂′=4x₁+3x₂ med x₁(0)=1, x₂(0)=5",
+    tags:["Uke 8","Lin. ODE-system","Diagonalisering"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2023", oppg:"Opp. 7", topics:["ind"],
+    title:"Ortogonal projeksjon og minste-kvadratsløsning",
+    desc:"Gitt ortogonal basis {u₁,u₂,u₃} for Col A; beregn Proj_{Col A}(b); minste-kvadratsløsning av Ax=b",
+    tags:["Uke 7","Projeksjon","Minste kvadrater","Approksimasjonsteorem"],
+    uker:["7"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2023", oppg:"Opp. 8", topics:["lin"],
+    title:"Koordinatvektorer og basisbyttematrise fra C til B",
+    desc:"Vektor med koordinater [1,2]ᵀ i basis B → standardkoordinater; bestem overgangsmatrisen C→B",
+    tags:["Uke 4–5","Overgangsmatrise","Basisbytte","Koordinatvektorer"],
+    uker:["4","5"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2023", oppg:"Opp. 6", topics:["ind"],
+    title:"Gram-Schmidt for V ⊆ ℝ³ og projeksjon",
+    desc:"V = Sp{[1,1,1]ᵀ,[0,1,2]ᵀ}; ortogonal basis; projeksjon av [3,−2,1]ᵀ ned på V",
+    tags:["Uke 7","Gram-Schmidt","Projeksjon"],
+    uker:["7"] },
+
+  { fag:"tma4110", exam:"TMA4115 Kont2023", oppg:"Opp. 7", topics:["ode"],
+    title:"Egenverdier og lims for ODE-system",
+    desc:"Finn egenverdier til A; beregn A³¹; løs IVP y′=Ay, y(0) gitt; lim_{t→∞} y(t)",
+    tags:["Uke 8","Egenverdier","Lin. ODE-system"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2023", oppg:"Opp. 5", topics:["ode"],
+    title:"Egenvektorer oppgitt — finn egenverdier og løs IVP",
+    desc:"A = [2 −1; ½ ½], egenvektorer [1,1]ᵀ og [2,1]ᵀ kjent; løs ODE-system med x(0)=[1,−1]ᵀ",
+    tags:["Uke 8","Egenvektorer","Lin. ODE-system"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2023", oppg:"Opp. 6", topics:["lin"],
+    title:"Finn standardmatrise til T : ℝ² → ℝ²",
+    desc:"T([1,2]ᵀ)=[1,1]ᵀ og T([1,1]ᵀ)=[−1,1]ᵀ; bestem T([1,0]ᵀ) og T([0,1]ᵀ)",
+    tags:["Uke 4","Lineærtransformasjon","Standardmatrise"],
+    uker:["4"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2023", oppg:"Opp. 7", topics:["ind"],
+    title:"Projeksjon og minste-kvadratsløsning",
+    desc:"Projeksjon av b=[1,0,2]ᵀ ned på V = Sp{[1,1,1]ᵀ,[1,1,−1]ᵀ}; minste-kvadratsløsning av overdeterminert system",
+    tags:["Uke 7","Projeksjon","Minste kvadrater"],
+    uker:["7"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2022", oppg:"Langsvar 4", topics:["lin"],
+    title:"Matriserepresentasjon og T² via basistransformasjon",
+    desc:"T(u)=v−w, T(v)=w−u, T(w)=u−v; finn T²(u), T²(v), T²(w); matriserepresentasjon [T]_B",
+    tags:["Uke 5","Matriserepresentasjon","Overgangsmatrise"],
+    uker:["5"] },
+
+  { fag:"tma4110", exam:"TMA4110 H2022", oppg:"Langsvar 6", topics:["ode"],
+    title:"Egenverdier og ODE-system IVP",
+    desc:"A = [1 1 −1; 1 1 1; 1 1 1]; finn egenverdier og egenvektorer; løs y′=Ay, y(0)=[1,0,1]ᵀ",
+    tags:["Uke 8","Diagonalisering","Lin. ODE-system"],
+    uker:["8"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2022", oppg:"Opp. 4", topics:["ind"],
+    title:"Gram-Schmidt i C([−π,π]) — funksjonalindreprodukt",
+    desc:"Er f₁=1, f₂=x, f₃=sin(x) ortogonale m.h.p. ⟨f,g⟩=∫_{−π}^π fg dx? Finn ortogonal basis for Sp{f₁,f₂,f₃}",
+    tags:["Uke 6–7","Gram-Schmidt","Funksjonalindreprodukt"],
+    uker:["6","7"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2022", oppg:"Opp. 6", topics:["lin"],
+    title:"Standardmatrise, basisbyttematrise og [T(x)]_B = B[x]_B",
+    desc:"Finn A for T(x) = (x·v/v·v)v − 2x; basisbyttematrise E→B; finn B slik at [T]_B=B; vis AP=PB",
+    tags:["Uke 4–5","Overgangsmatrise","Matriserepresentasjon","Basisbytte"],
+    uker:["4","5"] },
+
+  { fag:"tma4110", exam:"TMA4115 V2022", oppg:"Opp. 9", topics:["ode"],
+    title:"Løs ODE-system x′=x+ay, y′=x for alle reelle a",
+    desc:"Finn generell løsning for alle verdier av a (inkl. tilfeller med like egenverdier)",
+    tags:["Uke 8","Lin. ODE-system","Egenverdier"],
+    uker:["8"] },
+
+  // ── TMA4130 ──
+  { fag:"tma4130", exam:"TMA4130 H2025", oppg:"Opp. 1", topics:["fou"],
+    title:"Fourierrekke av f(t) — verken/odde-analyse",
+    desc:"f(t)=t for −π<t<0, π−t for 0<t<π; avgjør jevn/odde; beregn a₀, aₙ, bₙ eksplisitt; skriv tre første ledd",
+    tags:["Uke 13–16","Fourierrekker","Koeffisienter"],
+    uker:["13","15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2025", oppg:"Opp. 5", topics:["fou"],
+    title:"Varme- og bølgeligning; separasjon av variable",
+    desc:"Verifiser løsning av bølgelikning; bølgelikning i n dim.; løs varmeligningen uₜ=uₓₓ på (0,π) med Dirichlet-RB og u(x,0)=100",
+    tags:["Uke 15–16","Varmeligningen","Separasjon av variable","Fourierrekker og DL"],
+    uker:["15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2025", oppg:"Opp. 6", topics:["num"],
+    title:"ODE av 3. orden som system; Euler; ekvivalens Butcher ↔ trapedsregel",
+    desc:"Reskriv x‴ = 2x″ + x′ − 2x + … som 1. ordens system; eksplisitt Euler (3 steg); vis at RK-tablå tilsvarer Crank-Nicolson",
+    tags:["Uke 9–10","Eulers metode","Butcher tablå","Crank-Nicolson","ODE-systemer"],
+    uker:["9","10"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2024", oppg:"Opp. 2", topics:["fou"],
+    title:"Fourierrekke av jevn utvidelse av f(x)=2x med periode 4",
+    desc:"Utled jevn utvidelse av f(x)=2x på [0,2); beregn a₀ og aₙ; skriv de 4 første ledd",
+    tags:["Uke 13–16","Cosinusrekke","Jevn utvidelse"],
+    uker:["13","15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2024", oppg:"Opp. 3", topics:["num"],
+    title:"Identifiser Heuns metode fra Python-kode; Butcher-tablå",
+    desc:"Les av IVP og metode fra kode; skriv Butcher-tablå; eksplisitt eller implisitt; utfør ett steg for hand",
+    tags:["Uke 10","Runge-Kutta","Butcher tablå","Ordensanalyse"],
+    uker:["10"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2024", oppg:"Opp. 5", topics:["fou"],
+    title:"Varmeligningen med Neumann-RB via separasjon av variable",
+    desc:"uₜ=9uₓₓ på [0,π], uₓ(t,0)=uₓ(t,π)=0, u(0,x)=3cos(x)−cos(3x); separasjon av variable",
+    tags:["Uke 15–16","Varmeligningen","Neumann-RB","Separasjon av variable"],
+    uker:["15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2024", oppg:"Opp. 6", topics:["fou"],
+    title:"Bølgeligningen: to løsningsformer og d'Alembert",
+    desc:"Vis uˆ og ũ begge løser uₜₜ=c²uₓₓ; vis uˆ=ũ via trig-identitet; d'Alembert og symmetribetingelse",
+    tags:["Uke 15–16","Bølgeligningen","d'Alembert","Trig-identiteter"],
+    uker:["15"] },
+
+  { fag:"tma4130", exam:"TMA4130 S2025", oppg:"Opp. 2", topics:["fou"],
+    title:"Fourierrekke av odde utvidelse av f(x)=−x+1 med periode 2",
+    desc:"Utled odde utvidelse; skisse; beregn bₙ = 2/(nπ) for alle n; skriv 5 første ledd",
+    tags:["Uke 13–16","Sinusrekke","Odde utvidelse"],
+    uker:["13","15"] },
+
+  { fag:"tma4130", exam:"TMA4130 S2025", oppg:"Opp. 3", topics:["num"],
+    title:"Lipschitz-betingelse + generell 2-stegs implisitt RK-metode",
+    desc:"Vis Lipschitz for f(x,y)=2yx⁻⁴; matrise B=(I−λhA) for implisitt RK; beregn Δ; løs for K₁ og K₂",
+    tags:["Uke 9–10","Konvergens","Lipschitz","Runge-Kutta","Implisitt metode"],
+    uker:["9","10"] },
+
+  { fag:"tma4130", exam:"TMA4130 S2025", oppg:"Opp. 5", topics:["fou"],
+    title:"Varmeligningen — gjennomsnittstemp. og L²-norm",
+    desc:"Vis at gjennomsnittstemp. er konstant; vis at L²-normen avtar med t; finn T s.a. norm halveres",
+    tags:["Uke 15–16","Varmeligningen","Uniform konvergens","L²-norm"],
+    uker:["15"] },
+
+  { fag:"tma4130", exam:"TMA4130 S2025", oppg:"Opp. 6", topics:["fou"],
+    title:"Bølgeligningen — trekantformet initialbetingelse",
+    desc:"Beregn koeffisienter bₙ for trekantformet f(x); bestem λₙ = c·nπ/L; skriv u(x,t)",
+    tags:["Uke 15–16","Bølgeligningen","Fourierrekker og DL"],
+    uker:["15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2023", oppg:"Opp. 5", topics:["num"],
+    title:"Implisitt Euler fra kode; Newtons metode per trinn",
+    desc:"Identifiser implisitt Euler; løs 2x − cos(x)=0 per trinn med Newtons metode (3 iterasjoner)",
+    tags:["Uke 9","Implisitt Euler","Newtons metode","Lokal feil"],
+    uker:["9"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2023", oppg:"Opp. 6", topics:["fou"],
+    title:"Fourierrekke av |x³| (jevn funksjon)",
+    desc:"a₀ = π³/4; beregn aₙ via delvis integrasjon; skriv de 5 første ikke-nullledd",
+    tags:["Uke 13–16","Cosinusrekke","Koeffisienter","Integrasjon"],
+    uker:["13","15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2023", oppg:"Opp. 8", topics:["fou"],
+    title:"Bølgeligningen via d'Alembert",
+    desc:"uₜₜ=9uₓₓ, u(0,x)=sin(x), uₜ(0,x)=cos(x); anvend d'Alemberts formel og beregn integralet",
+    tags:["Uke 15–16","Bølgeligningen","d'Alembert"],
+    uker:["15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2023", oppg:"Opp. 9", topics:["fou"],
+    title:"Varmeligningen med Neumann-RB via separasjon",
+    desc:"uₜ=uₓₓ på [0,2], uₓ(t,0)=uₓ(t,2)=0, u(0,x)=1−cos(3πx); finn løsning",
+    tags:["Uke 15–16","Varmeligningen","Separasjon av variable"],
+    uker:["15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2022", oppg:"Opp. 3", topics:["fou"],
+    title:"Fourierrekke av odde utvidelse f(x)=2+x til periode 2",
+    desc:"Skisse av g på [−3,3]; beregn Fourierrekken (bₙ); bₙ = 4−6(−1)ⁿ/(nπ)",
+    tags:["Uke 13–16","Sinusrekke","Odde utvidelse","Skisse"],
+    uker:["13","15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2022", oppg:"Opp. 4", topics:["fou"],
+    title:"Varmeligningen ∂u/∂t = 4∂²u/∂x² på (−1,1); separasjon",
+    desc:"Dirichlet-RB u(±1,t)=0; finn ikke-trivielle løsninger u=F(x)G(t)",
+    tags:["Uke 15–16","Varmeligningen","Separasjon av variable","Dirichlet-RB"],
+    uker:["15"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2022", oppg:"Opp. 8", topics:["num"],
+    title:"Identifiser RK-metode fra kode; Butcher-tablå; ordens",
+    desc:"Les av 3-stegs kode; skriv Butcher-tablå; bestem orden via ordensbetingelsene",
+    tags:["Uke 10","Runge-Kutta","Butcher tablå","Ordensanalyse"],
+    uker:["10"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2022", oppg:"Opp. 9", topics:["num"],
+    title:"Innebygd RK-par; lokal feilestimering; steglengdekontroll",
+    desc:"Utfør ett steg med høyere-ordens metode; beregn ε̂₁ = |y₁ − ŷ₁|; ny steglengde hₙₑw med sikkerhetsfaktor P=0.8",
+    tags:["Uke 10","Feilanalyse","Steglengdekontroll","Lokal feil"],
+    uker:["10"] },
+
+  { fag:"tma4130", exam:"TMA4130 H2022", oppg:"Opp. 6 (4N)", topics:["num"],
+    title:"Trunkerings- og avrundingsfeil for tre-punkts differanseformel",
+    desc:"Tre-punktsformel for u′(x); trunkerfeil O(h²) + avrundingsfeil O(ε/h); finn p s.a. h = O(εᵖ)",
+    tags:["Uke 9","Feilanalyse","Lokal feil","Avrundingsfeil"],
+    uker:["9"] },
+
+  // ── TMA4100 ──
+  { fag:"tma4100", exam:"TMA4100 H2025", oppg:"Opp. 6", topics:["rek"],
+    title:"Konvergensintervall for Σ n³(2x−3)ⁿ inkl. endepunkter",
+    desc:"Bruk kvotienttesten for konvergensradius; sjekk endepunktene separat",
+    tags:["Uke 12","Potensrekke","Konvergensintervall"],
+    uker:["12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2025", oppg:"Opp. 8", topics:["rek"],
+    title:"Taylorrekke om x=0 til F(x) = ∫₀ˣ e^{−t²} dt",
+    desc:"Skriv potensrekken til e^{−t²}; integrer ledd for ledd; konvergerer for alle x",
+    tags:["Uke 12","Taylorrekke","Integrasjon av rekker"],
+    uker:["12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2025", oppg:"Opp. 9", topics:["rek"],
+    title:"Hvis Σ 4ⁿcₙ konvergerer — konvergerer Σ cₙ?",
+    desc:"Sammenligningstest: |cₙ| ≤ |4ⁿcₙ|·(1/4)ⁿ → ja, absolutt konvergens",
+    tags:["Uke 11","Konvergenstester","Sammenligningstest"],
+    uker:["11"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2024", oppg:"Opp. 5", topics:["rek"],
+    title:"Taylorrekke — bestem f^{(13)}(0) fra rekkeutrykk",
+    desc:"f(x) = Σ (−1)ⁿx^{4n+1}/(2n+1)!; koeffisient for x¹³ er (−1)³/7! → f^{(13)}(0) = 13!·(−1)³/7!",
+    tags:["Uke 12","Taylorrekke","Koeffisienter"],
+    uker:["12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2024", oppg:"Opp. 9", topics:["rek"],
+    title:"Konvergensintervall for Σ n(x+2)ⁿ / 5^{n−1} inkl. endepunkter",
+    desc:"Kvotienttest → R=5; sentrum x=−2; sjekk x=−7 og x=3",
+    tags:["Uke 12","Potensrekke","Konvergensradius"],
+    uker:["12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2023", oppg:"Opp. 7", topics:["rek"],
+    title:"Absolutt/betinget konvergens — tre rekker",
+    desc:"(i) Σ n/(n+11): divergenstest; (ii) Σ (−1)ⁿn/eⁿ: alternerende+kvotient; (iii) Σ (−1)ⁿ/(n+2√n): Leibniz",
+    tags:["Uke 11","Konvergenstester","Alternerende rekker","Divergenstest"],
+    uker:["11"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2023", oppg:"Opp. 8", topics:["rek"],
+    title:"Taylorrekke til F(x) = ∫₀ˣ ln(1+t)/t dt",
+    desc:"ln(1+t) = Σ (−1)ⁿtⁿ/(n+1); divider med t; integrer; F(x) = Σ (−1)ⁿxⁿ⁺¹/(n+1)²; konvergerer for |x|≤1",
+    tags:["Uke 12","Taylorrekke","Integrasjon av rekker","Konvergensintervall"],
+    uker:["12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2022", oppg:"Opp. 7", topics:["rek"],
+    title:"Absolutt/betinget konvergens — to rekker",
+    desc:"Σ (−1)ⁿcos²(n)/n²⁰²²: absolutt via sammenligningstest med p-rekke; Σ (5n²−3n³)/(4n³+1): divergenstest",
+    tags:["Uke 11","p-rekker","Sammenligningstest","Absolutt konvergens"],
+    uker:["11"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2021", oppg:"Opp. 6", topics:["rek"],
+    title:"Absolutt/betinget konvergens — tre rekker",
+    desc:"Σ (−1)ⁿ/[(n+1)ln(n+1)]: Leibniz; Σ 3ⁿ/(n−1)!: kvotienttest; Σ sin(n)/n²: sammenligningstest",
+    tags:["Uke 11","Alternerende rekker","Kvotienttest","p-rekker"],
+    uker:["11"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2020", oppg:"Opp. 8", topics:["rek"],
+    title:"Taylorrekke til g(x) = ∫₀^{x²} f(t) dt gitt f som rekke",
+    desc:"f(x) = Σ 4(n+1)x^{2n+1}; substituer t=x², integrer; g(x) = Σ 2x^{4n+4}/(n+1)",
+    tags:["Uke 12","Taylorrekke","Integrasjon av rekker"],
+    uker:["12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2019", oppg:"Opp. 9", topics:["rek"],
+    title:"Absolutt/betinget konvergens — tre rekker",
+    desc:"Σ sin(n²π/2)/(n²+1): sammenligningstest; Σ (−1)^{n+1}eⁿ/n³: divergerer; Σ (−1)ⁿ/(ln n+1): betinget Leibniz",
+    tags:["Uke 11","Konvergenstester","Alternerende rekker"],
+    uker:["11"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2018", oppg:"Opp. 7", topics:["rek"],
+    title:"Geometrisk rekke og konvergensintervall for potensrekke",
+    desc:"Σ 9ⁿ/(8ⁿ+10ⁿ): sammenlign med geometrisk rekke; Σ (−1)ⁿ/n·(1−2x)ⁿ: konvergensintervall inkl. endepunkter",
+    tags:["Uke 11–12","Geometrisk rekke","Potensrekke","Betinget konvergens"],
+    uker:["11","12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2018", oppg:"Opp. 8", topics:["rek"],
+    title:"Taylorpolynom til cos(x) med feilbegrensning på [−1,1]",
+    desc:"Bestem n slik at |cos(x)−Pₙ(x)| ≤ 1/120 for alle x ∈ [−1,1]; bruk restleddet",
+    tags:["Uke 12","Taylorrekke","Restledd","Feilanalyse"],
+    uker:["12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2017", oppg:"Opp. 8", topics:["rek"],
+    title:"Absolutt/betinget konvergens — tre rekker",
+    desc:"Σ (−1)ⁿn!/(n+2)!: absolutt; Σ ne^{−n²}: absolutt via integral/sammenligningstest; Σ (−1)ⁿ√n/(n+1): betinget Leibniz",
+    tags:["Uke 11","Alternerende rekker","Leibniz","Kvotienttest"],
+    uker:["11"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2017", oppg:"Opp. 10", topics:["rek"],
+    title:"Integral som alternerende rekke + feilestimering",
+    desc:"Vis ∫₀¹ ln(1+x)/x dx = Σ (−1)ⁿ/(n+1)²; bruk Leibniz til å finne antall ledd for nøyaktighet 0.005",
+    tags:["Uke 11–12","Alternerende rekker","Taylorrekke","Feilestimering"],
+    uker:["11","12"] },
+
+  { fag:"tma4100", exam:"TMA4100 H2016", oppg:"Opp. 7", topics:["rek"],
+    title:"Absolutt/betinget konvergens — tre rekker",
+    desc:"Σ (−1)^{n+1}/(n+ln n): betinget Leibniz; Σ (n−1)/n⁴: absolutt p-rekke; Σ 3ⁿ/(n²−arctan n): grensetest",
+    tags:["Uke 11","p-rekker","Grensetest","Betinget konvergens"],
+    uker:["11"] },
+];
+
+// Build exam list
+const examSet = [];
+const examSeen = new Set();
+["tma4110","tma4130","tma4100"].forEach(fag => {
+  DATA.filter(d => d.fag===fag).forEach(d => {
+    if (!examSeen.has(d.exam)) { examSeen.add(d.exam); examSet.push({fag, exam: d.exam}); }
+  });
+});
+
+const examSelect = document.getElementById('exam-filter');
+examSet.forEach(({fag, exam}) => {
+  const opt = document.createElement('option');
+  opt.value = exam;
+  opt.dataset.fag = fag;
+  opt.textContent = exam;
+  examSelect.appendChild(opt);
+});
+
+document.getElementById('total-count').textContent = DATA.length + ' oppgaver totalt';
+
+let activeTopic = 'all';
+
+function renderAll() {
+  const searchVal = document.getElementById('search').value.toLowerCase();
+  const fagVal = document.getElementById('fag-filter').value;
+  const examVal = document.getElementById('exam-filter').value;
+  const weekVal = document.getElementById('week-filter').value;
+
+  // Filter data
+  const visible = DATA.filter(d => {
+    if (fagVal !== 'all' && d.fag !== fagVal) return false;
+    if (examVal !== 'all' && d.exam !== examVal) return false;
+    if (activeTopic !== 'all' && !d.topics.includes(activeTopic)) return false;
+    if (weekVal !== 'all' && !d.uker.includes(weekVal)) return false;
+    if (searchVal) {
+      const haystack = (d.title + d.desc + d.tags.join(' ') + d.exam + d.oppg).toLowerCase();
+      if (!haystack.includes(searchVal)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('results-info').textContent = visible.length === DATA.length
+    ? `Viser alle ${DATA.length} oppgaver`
+    : `Viser ${visible.length} av ${DATA.length} oppgaver`;
+
+  const content = document.getElementById('content');
+  content.innerHTML = '';
+
+  const empty = document.getElementById('empty-state');
+  if (visible.length === 0) { empty.classList.add('show'); return; }
+  else empty.classList.remove('show');
+
+  // Group by exam
+  const byExam = {};
+  visible.forEach(d => {
+    if (!byExam[d.exam]) byExam[d.exam] = { fag: d.fag, items: [] };
+    byExam[d.exam].items.push(d);
+  });
+
+  const badgeClass = { lin:'b-lin', ind:'b-ind', ode:'b-ode', num:'b-num', rek:'b-rek', fou:'b-fou' };
+  const badgeLabel = { lin:'Lin. alg.', ind:'Indreprodukt', ode:'Diff.lign.', num:'Numerisk', rek:'Rekker', fou:'Fourier/PDE' };
+
+  const fagLabel = { tma4110:'TMA4110/4115 — Matematikk 3', tma4130:'TMA4130 — Matematikk 4N', tma4100:'TMA4100 — Matematikk 1' };
+
+  // Sort exams: tma4110 → tma4130 → tma4100, newest first within each
+  const sortedExams = Object.keys(byExam).sort((a, b) => {
+    const fa = byExam[a].fag, fb = byExam[b].fag;
+    const order = ['tma4110','tma4130','tma4100'];
+    if (fa !== fb) return order.indexOf(fa) - order.indexOf(fb);
+    return a < b ? 1 : -1;
+  });
+
+  sortedExams.forEach(exam => {
+    const { fag, items } = byExam[exam];
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    sec.innerHTML = `<div class="section-head">${fagLabel[fag]} · ${exam}</div><div class="cards-grid" id="grid-${exam.replace(/\s/g,'_')}"></div>`;
+    content.appendChild(sec);
+    const grid = sec.querySelector('.cards-grid');
+
+    items.forEach(d => {
+      const topic = d.topics[0];
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-left">
+          <div class="fagkode">${d.fag.toUpperCase()}</div>
+          <div class="year">${d.oppg}</div>
+          <span class="badge ${badgeClass[topic]}">${badgeLabel[topic]}</span>
+        </div>
+        <div class="card-right">
+          <div class="card-title">${d.title}</div>
+          <div class="card-desc">${d.desc}</div>
+          <div class="tag-row">${d.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  });
+}
+
+// Topic pills
+document.querySelectorAll('.pill').forEach(btn => {
+  btn.addEventListener('click', () => {
+    activeTopic = btn.dataset.topic;
+    document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderAll();
+  });
+});
+
+// Sync fag-filter with exam dropdown
+document.getElementById('fag-filter').addEventListener('change', function() {
+  const fag = this.value;
+  const examSel = document.getElementById('exam-filter');
+  examSel.value = 'all';
+  Array.from(examSel.options).forEach(opt => {
+    if (opt.value === 'all') { opt.style.display = ''; return; }
+    opt.style.display = (fag === 'all' || opt.dataset.fag === fag) ? '' : 'none';
+  });
+  renderAll();
+});
+
+document.getElementById('exam-filter').addEventListener('change', renderAll);
+document.getElementById('week-filter').addEventListener('change', renderAll);
+document.getElementById('search').addEventListener('input', renderAll);
+
+renderAll();
+</script>
+</body>
+</html>
