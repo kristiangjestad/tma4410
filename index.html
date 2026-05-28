@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMA4410 — Forelesningsnotater 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+<style>
+:root {
+  --bg: #f9f8f6;
+  --surface: #ffffff;
+  --surface2: #f3f2ef;
+  --border: #e4e2dc;
+  --border2: #ccc9c0;
+  --text: #1a1a18;
+  --text2: #5c5b56;
+  --text3: #9b9a94;
+  --accent: #2d5be3;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+  --sw: 218px;
+  --sbg: #1c1a18;
+  --stxt: #ccc9c0;
+  --shov: #28261f;
+  --sact: #2d5be3;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text);
+  font-size: 15px; line-height: 1.6; display: flex;
+}
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sw); background: var(--sbg); color: var(--stxt);
+  height: 100vh; position: fixed; top: 0; left: 0;
+  overflow-y: auto; display: flex; flex-direction: column;
+  scrollbar-width: thin; scrollbar-color: #3a3830 transparent;
+}
+.sb-head { padding: 18px 16px 14px; border-bottom: 1px solid #2e2b22; }
+.sb-title { font-size: 14px; font-weight: 700; color: #f0ece2; letter-spacing: -.2px; }
+.sb-sub { font-size: 11px; color: #6b6860; margin-top: 2px; }
+nav { flex: 1; padding: 6px 0; }
+.wb {
+  display: block; width: 100%; text-align: left;
+  padding: 8px 16px; background: none; border: none;
+  color: var(--stxt); cursor: pointer; font-size: 13px;
+  transition: background .1s; line-height: 1.35;
+}
+.wb:hover { background: var(--shov); }
+.wb.active { background: var(--sact); color: #fff; }
+.wb .wn { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: #6b6860; display: block; margin-bottom: 1px; }
+.wb.active .wn { color: #c7d7fb; }
+.sb-foot { padding: 12px 16px; border-top: 1px solid #2e2b22; }
+.sb-foot a { display: block; font-size: 12px; color: #6b6860; text-decoration: none; padding: 4px 0; }
+.sb-foot a:hover { color: var(--stxt); }
+/* ── Main ── */
+.main { margin-left: var(--sw); flex: 1; padding: 40px 48px 80px; }
+.lecture { display: none; max-width: 740px; }
+.lecture.active { display: block; }
+/* ── Lecture header ── */
+.lh { margin-bottom: 28px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
+.ln { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); margin-bottom: 3px; }
+.lt { font-size: 23px; font-weight: 700; letter-spacing: -.3px; color: var(--text); }
+.ld { font-size: 13px; color: var(--text2); margin-top: 5px; }
+/* ── Typography ── */
+h2 { font-size: 16px; font-weight: 700; color: var(--text); margin: 28px 0 10px; letter-spacing: -.15px; }
+h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); margin: 18px 0 7px; }
+p { line-height: 1.7; margin-bottom: 9px; }
+ul, ol { margin: 7px 0 10px 20px; line-height: 1.7; }
+li { margin-bottom: 3px; }
+/* ── Boxes ── */
+.box { border-left: 3px solid; padding: 11px 15px; margin: 14px 0; border-radius: 0 var(--radius) var(--radius) 0; }
+.bl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+.def { border-color: #2d5be3; background: #f0f4ff; } .def .bl { color: #1e40af; }
+.thm { border-color: #0d7a5c; background: #f0fdf8; } .thm .bl { color: #065f46; }
+.ex  { border-color: #b45309; background: #fffcf0; } .ex  .bl { color: #92400e; }
+.alg { border-color: #7c3aed; background: #f5f3ff; } .alg .bl { color: #5b21b6; }
+/* ── Tables ── */
+table { border-collapse: collapse; margin: 12px 0; font-size: 13.5px; width: 100%; }
+th, td { border: 1px solid var(--border2); padding: 6px 10px; text-align: center; }
+th { background: var(--surface2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.katex-display { overflow-x: auto; }
+hr.sep { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+@media (max-width: 780px) {
+  .sidebar { transform: translateX(-218px); width: 218px; z-index: 100; transition: transform .2s; }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 60px 18px 60px; }
+  .menu { display: flex; }
+}
+.menu {
+  display: none; position: fixed; top: 10px; left: 10px; z-index: 200;
+  background: var(--sbg); color: #fff; border: none; border-radius: 7px;
+  padding: 7px 11px; cursor: pointer; font-size: 15px; align-items: center;
+}
+@media (min-width: 781px) { .menu { display: none !important; } }
+</style>
+</head>
+<body>
+
+<button class="menu" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">TMA4410 — Mat 2A</div>
+    <div class="sb-sub">Forelesningsnotater · NTNU 2026</div>
+  </div>
+  <nav>
+    <button class="wb active" data-w="uke2"  onclick="show('uke2')"> <span class="wn">Uke 2</span>Vektorrom</button>
+    <button class="wb" data-w="uke3"  onclick="show('uke3')"> <span class="wn">Uke 3</span>Basis og underrom</button>
+    <button class="wb" data-w="uke4"  onclick="show('uke4')"> <span class="wn">Uke 4</span>Matriserom og isomorfi</button>
+    <button class="wb" data-w="uke5"  onclick="show('uke5')"> <span class="wn">Uke 5</span>Basisskifte og indreprodukt</button>
+    <button class="wb" data-w="uke6"  onclick="show('uke6')"> <span class="wn">Uke 6</span>Generelt indreprodukt</button>
+    <button class="wb" data-w="uke7"  onclick="show('uke7')"> <span class="wn">Uke 7</span>Gram-Schmidt og egenverdier</button>
+    <button class="wb" data-w="uke8"  onclick="show('uke8')"> <span class="wn">Uke 8</span>Diagonalisering og ODE</button>
+    <button class="wb" data-w="uke9"  onclick="show('uke9')"> <span class="wn">Uke 9</span>Numerisk ODE I</button>
+    <button class="wb" data-w="uke10" onclick="show('uke10')"><span class="wn">Uke 10</span>Numerisk ODE II</button>
+    <button class="wb" data-w="uke11" onclick="show('uke11')"><span class="wn">Uke 11</span>Rekker og konvergens</button>
+    <button class="wb" data-w="uke12" onclick="show('uke12')"><span class="wn">Uke 12</span>Potensrekker og Taylor</button>
+    <button class="wb" data-w="uke13" onclick="show('uke13')"><span class="wn">Uke 13</span>Fouriertilnærming</button>
+    <button class="wb" data-w="uke15" onclick="show('uke15')"><span class="wn">Uke 15</span>Fourierrekker</button>
+    <button class="wb" data-w="uke16" onclick="show('uke16')"><span class="wn">Uke 16</span>Fourier avansert</button>
+  </nav>
+  <div class="sb-foot">
+    <a href="tma4410_eksamensoppgaver.html">Eksamensoppgaver →</a>
+  </div>
+</aside>
+
+<main class="main">
+
+<!-- ══════════════════════════════ UKE 2 ══════════════════════════════ -->
+<section id="uke2" class="lecture active">
+<div class="lh"><div class="ln">Uke 2</div><h1 class="lt">Vektorrom</h1>
+<p class="ld">Definisjon og aksiomer, eksempler, lineærkombinasjon, spenn og lineær uavhengighet</p></div>
+
+<h2>Vektorrom</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>Et <strong>vektorrom</strong> over $\mathbb{R}$ er en mengde $V$ med addisjon og skalarmultiplikasjon som oppfyller 8 aksiomer: lukkethet, assosiativitet, kommutativitet, nullelement $\mathbf{0}$, invers $-v$, identitetsskalering $1\cdot v = v$, og to distributivlover. Over $\mathbb{C}$ brukes komplekse skalarer.</p></div>
+
+<h3>Standard eksempler</h3>
+<ul>
+<li>$\mathbb{R}^n$ — kolonnevektorer, $\dim = n$</li>
+<li>$\mathbb{P}_n$ — polynomer av grad $\leq n$, $\dim = n+1$</li>
+<li>$C[a,b]$ — kontinuerlige funksjoner på $[a,b]$, uendelig-dimensjonalt</li>
+<li>$M_{m \times n}(\mathbb{R})$ — reelle $m\times n$-matriser, $\dim = mn$</li>
+</ul>
+
+<h2>Lineærkombinasjon og Spenn</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>En <strong>lineærkombinasjon</strong> av $v_1,\ldots,v_k \in V$ er $r_1 v_1 + \cdots + r_k v_k$ med $r_i \in \mathbb{R}$. <strong>Spennet</strong>:</p>
+$$\operatorname{Span}(v_1,\ldots,v_k) = \{r_1 v_1 + \cdots + r_k v_k \mid r_i \in \mathbb{R}\}$$
+<p>$\operatorname{Span}(S)$ er alltid et <em>underrom</em> av $V$.</p></div>
+
+<div class="box ex"><div class="bl">Eksempel</div>
+<p>$v_1=(2,1,3)^T$, $v_2=(1,-3,4)^T$ i $\mathbb{R}^3$: $\operatorname{Span}(v_1,v_2)$ er et plan gjennom origo med ligning $13x-5y-7z=0$.</p></div>
+
+<h2>Lineær Uavhengighet</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$v_1,\ldots,v_k$ er <strong>lineært uavhengige</strong> dersom</p>
+$$r_1 v_1 + \cdots + r_k v_k = \mathbf{0} \;\Rightarrow\; r_1 = \cdots = r_k = 0.$$
+<p>Ellers er de <strong>lineært avhengige</strong>.</p></div>
+
+<div class="box thm"><div class="bl">Teorem</div>
+<p>I $\mathbb{R}^n$ kan man ha høyst $n$ lineært uavhengige vektorer. Enhver mengde med mer enn $n$ vektorer i $\mathbb{R}^n$ er lineært avhengig.</p></div>
+</section>
+
+<!-- ══════════════════════════════ UKE 3 ══════════════════════════════ -->
+<section id="uke3" class="lecture">
+<div class="lh"><div class="ln">Uke 3</div><h1 class="lt">Basis, Underrom og Lineærtransformasjoner</h1>
+<p class="ld">Basis og dimensjon, underrom, lineærtransformasjoner og matriserom</p></div>
+
+<h2>Underrom</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$U \subseteq V$ (ikke-tom) er et <strong>underrom</strong> dersom $u,v\in U \Rightarrow u+v\in U$ og $u\in U, r\in\mathbb{R} \Rightarrow ru\in U$. $\operatorname{Span}(S)$ er alltid et underrom.</p></div>
+
+<h2>Basis og Dimensjon</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$S=\{v_1,\ldots,v_n\}$ er en <strong>basis</strong> for $V$ dersom $S$ er lineært uavhengig og $\operatorname{Span}(S)=V$. Alle baser har like mange elementer — <strong>dimensjonen</strong> $\dim V$.</p></div>
+
+<div class="box ex"><div class="bl">Standardbaser</div>
+<ul>
+<li>$\mathbb{R}^n$: $\{e_1,\ldots,e_n\}$, standardbasis</li>
+<li>$\mathbb{P}_n$: $\{1,x,x^2,\ldots,x^n\}$, $\dim\mathbb{P}_n=n+1$</li>
+<li>$M_{m\times n}$: matrisene $E_{ij}$ (en 1 i posisjon $ij$, null ellers)</li>
+</ul></div>
+
+<h2>Lineærtransformasjoner</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$T:V\to W$ er en <strong>lineærtransformasjon</strong> dersom $T(u+v)=T(u)+T(v)$ og $T(ru)=rT(u)$ for alle $u,v\in V$, $r\in\mathbb{R}$.</p></div>
+
+<h2>Matriserom</h2>
+<p>For $A\in M_{m\times n}$:</p>
+<ul>
+<li><strong>Kolonnerom</strong> $\operatorname{Col}A=\operatorname{Span}(\text{kolonner})\subseteq\mathbb{R}^m$</li>
+<li><strong>Radrom</strong> $\operatorname{Row}A=\operatorname{Span}(\text{rader})\subseteq\mathbb{R}^n$</li>
+<li><strong>Nullrom</strong> $\operatorname{Nul}A=\{x\mid Ax=\mathbf{0}\}\subseteq\mathbb{R}^n$</li>
+<li><strong>Rang</strong> $\operatorname{rank}A=\dim(\operatorname{Col}A)=\dim(\operatorname{Row}A)$ = antall pivotelementer</li>
+</ul>
+<div class="box thm"><div class="bl">Rangteoremet</div>
+$$\operatorname{rank}A + \dim(\operatorname{Nul}A) = n$$
+<p>Basis for $\operatorname{Col}A$: pivotkolonnene i $A$. Basis for $\operatorname{Nul}A$: løsningsvektorer for de $n-\operatorname{rank}A$ frie variablene.</p></div>
+</section>
+
+<!-- ══════════════════════════════ UKE 4 ══════════════════════════════ -->
+<section id="uke4" class="lecture">
+<div class="lh"><div class="ln">Uke 4</div><h1 class="lt">Matriserom, Rangteorem og Isomorfi</h1>
+<p class="ld">Kjerne og bilde, injektivitet, surjektivitet, isomorfier, koordinatavbildning og matriserepresentasjon</p></div>
+
+<h2>Kjerne og Bilde</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>For $T:V\to W$ lineær: $\operatorname{Ker}T=\{v\in V\mid T(v)=\mathbf{0}\}$ (underrom av $V$), $\operatorname{Ran}T=T(V)$ (underrom av $W$).</p></div>
+
+<div class="box thm"><div class="bl">Rangteoremet for lineærtransformasjoner</div>
+$$\dim(\operatorname{Ran}T)+\dim(\operatorname{Ker}T)=\dim V$$
+<p>$T$ er <strong>injektiv</strong> $\iff\operatorname{Ker}T=\{\mathbf{0}\}$. $T$ er <strong>surjektiv</strong> $\iff\operatorname{Ran}T=W$.</p></div>
+
+<h2>Isomorfi og Koordinatavbildning</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$T$ er en <strong>isomorfi</strong> dersom den er bijektiv (injektiv og surjektiv). Da er $V\cong W$.</p>
+<p style="margin-top:7px"><strong>Koordinatavbildningen</strong> $K:V\to\mathbb{R}^n$ for basis $B_V=\{v_1,\ldots,v_n\}$:</p>
+$$K(v)=[v]_{B_V}=\begin{pmatrix}r_1\\\vdots\\r_n\end{pmatrix} \quad\text{der }v=r_1 v_1+\cdots+r_n v_n.$$
+<p>$K$ er en isomorfi — ethvert $n$-dimensjonalt $V$ er isomorft med $\mathbb{R}^n$.</p></div>
+
+<h2>Matriserepresentasjon</h2>
+<p>For $T:V\to W$ med baser $B_V=\{v_1,\ldots,v_n\}$, $B_W=\{w_1,\ldots,w_m\}$:</p>
+$$[T(v)]_{B_W}=[T]_{B_W\leftarrow B_V}\cdot[v]_{B_V}$$
+<p>Kolonnene i $[T]_{B_W\leftarrow B_V}$ er $[T(v_1)]_{B_W},\ldots,[T(v_n)]_{B_W}$.</p>
+
+<div class="box ex"><div class="bl">Eksempel — T : ℝ³ → ℝ³ gitt ved tre bilder</div>
+<p>Dersom $T(v_1), T(v_2), T(v_3)$ er kjent kan man bygge $[T]_{B_W\leftarrow B_V}$ direkte. For standardbasen er $[T]_{\text{std}} = \begin{pmatrix}T(e_1)&amp;T(e_2)&amp;T(e_3)\end{pmatrix}$.</p></div>
+</section>
+
+<!-- ══════════════════════════════ UKE 5 ══════════════════════════════ -->
+<section id="uke5" class="lecture">
+<div class="lh"><div class="ln">Uke 5</div><h1 class="lt">Basisskifte og Indreprodukt</h1>
+<p class="ld">Skifte av basis, similære matriser, euklidsk indreprodukt og projeksjon</p></div>
+
+<h2>Skifte av Basis</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p><strong>Basisskiftematrisen</strong> $P_{B_2\leftarrow B_1}$ oppfyller $[v]_{B_2}=P_{B_2\leftarrow B_1}[v]_{B_1}$ for alle $v\in V$.</p></div>
+
+<div class="box thm"><div class="bl">Similære matriser</div>
+<p>Dersom $[T]_{B_1}=A$ og $[T]_{B_2}=B$ er $B=P^{-1}AP$ der $P=P_{B_1\leftarrow B_2}$. Similære matriser har samme egenverdier, determinant og spor.</p></div>
+
+<div class="box ex"><div class="bl">Eksempel — $\mathbb{P}_2$</div>
+<p>$B_1=\{1,x,x^2\}$ (standard), $B_2=\{2,x+x^2,x^2\}$. Skriv $B_2$-vektorene i $B_1$-koordinater og stabél dem som kolonner i $P_{B_1\leftarrow B_2}$.</p></div>
+
+<h2>Indreprodukt (Skalarprodukt)</h2>
+<div class="box def"><div class="bl">Euklidsk indreprodukt på $\mathbb{R}^n$</div>
+$$x\cdot y = \sum_{i=1}^n x_i y_i = x^Ty, \qquad \|x\|=\sqrt{x\cdot x}.$$
+<p>Geometrisk: $x\cdot y=\|x\|\|y\|\cos\theta$. To vektorer er <strong>ortogonale</strong> dersom $x\cdot y=0$.</p></div>
+
+<h2>Projeksjon</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+$$\operatorname{proj}_x y = \frac{x\cdot y}{\|x\|^2}\,x$$
+<p>Komponenten $y-\operatorname{proj}_x y$ er ortogonal på $x$.</p></div>
+
+<h2>Ortogonalt Komplement</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+$$U^\perp=\{v\in V\mid v\cdot u=0\ \forall u\in U\}$$
+<p>Enhver $v\in V$ dekomponerer unikt: $v=v_U+v_{U^\perp}$, og $\|v\|^2=\|v_U\|^2+\|v_{U^\perp}\|^2$.</p></div>
+</section>
+
+<!-- ══════════════════════════════ UKE 6 ══════════════════════════════ -->
+<section id="uke6" class="lecture">
+<div class="lh"><div class="ln">Uke 6</div><h1 class="lt">Generelt Indreprodukt og Projeksjon</h1>
+<p class="ld">Abstrakte indreproduktrom, Cauchy-Schwarz, projeksjon på underrom, Legendre og sinus/cosinus</p></div>
+
+<h2>Generelt Indreprodukt</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$\langle\cdot,\cdot\rangle:V\times V\to\mathbb{R}$ er et <strong>indreprodukt</strong> dersom:</p>
+<ol>
+<li>$\langle u,v\rangle=\langle v,u\rangle$ (symmetri)</li>
+<li>$\langle u+v,w\rangle=\langle u,w\rangle+\langle v,w\rangle$ (additivitet)</li>
+<li>$\langle rv,w\rangle=r\langle v,w\rangle$ (homogenitet)</li>
+<li>$\langle v,v\rangle\geq 0$ og $\langle v,v\rangle=0\Leftrightarrow v=\mathbf{0}$ (positivt definitt)</li>
+</ol>
+<p style="margin-top:6px">Norm: $\|v\|=\sqrt{\langle v,v\rangle}$. Ortogonal: $\langle u,v\rangle=0$.</p></div>
+
+<h3>Viktige eksempler</h3>
+<ul>
+<li>$\mathbb{R}^n$: $\langle x,y\rangle=x^Ty$</li>
+<li>$C[-1,1]$: $\langle f,g\rangle=\int_{-1}^1 f(x)g(x)\,dx$</li>
+<li>$C[-\pi,\pi]$: $\langle f,g\rangle=\dfrac{1}{\pi}\int_{-\pi}^\pi f(x)g(x)\,dx$</li>
+</ul>
+
+<h2>Cauchy-Schwarz og Trekantulikheten</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+$$|\langle u,v\rangle|\leq\|u\|\,\|v\|$$
+$$\|u+v\|\leq\|u\|+\|v\|$$
+<p>Likhet i Cauchy-Schwarz $\Leftrightarrow$ $u$ og $v$ er proporsjonale.</p></div>
+
+<h2>Projeksjon på Underrom</h2>
+<div class="box thm"><div class="bl">Projeksjonsteoremet</div>
+<p>La $\{u_1,\ldots,u_k\}$ være <strong>ortonormal basis</strong> for $U$ ($\langle u_i,u_j\rangle=\delta_{ij}$). Da:</p>
+$$v_U=\operatorname{proj}_U v=\sum_{i=1}^k\langle u_i,v\rangle\,u_i$$
+<p>$v_U$ er den unike vektoren i $U$ nærmest $v$, og $v-v_U\perp U$.</p></div>
+
+<div class="box ex"><div class="bl">Eksempel — Sinus/cosinus ortonormalitet</div>
+<p>Med $\langle f,g\rangle=\frac{1}{\pi}\int_{-\pi}^\pi fg\,dx$:</p>
+$$\frac{1}{\pi}\int_{-\pi}^\pi\cos(mx)\cos(nx)\,dx=\delta_{mn}, \quad \frac{1}{\pi}\int_{-\pi}^\pi\sin(mx)\sin(nx)\,dx=\delta_{mn}$$
+<p>$\frac{1}{\pi}\int_{-\pi}^\pi\cos(mx)\sin(nx)\,dx=0$ for alle $m,n$.</p></div>
+</section>
+
+<!-- ══════════════════════════════ UKE 7 ══════════════════════════════ -->
+<section id="uke7" class="lecture">
+<div class="lh"><div class="ln">Uke 7</div><h1 class="lt">Gram-Schmidt og Egenverdier</h1>
+<p class="ld">Gram-Schmidt-prosessen, Legendre-polynomer, egenverdier/egenvektorer og diagonalisering</p></div>
+
+<h2>Gram-Schmidt-prosessen</h2>
+<div class="box alg"><div class="bl">Algoritme</div>
+<p>Gitt basis $\{v_1,\ldots,v_n\}$ for $U$. Konstruer ortonormal basis $\{u_1,\ldots,u_n\}$:</p>
+$$\tilde{u}_1=v_1,\quad u_1=\frac{\tilde{u}_1}{\|\tilde{u}_1\|}$$
+$$\tilde{u}_k=v_k-\sum_{j=1}^{k-1}\langle u_j,v_k\rangle\,u_j,\quad u_k=\frac{\tilde{u}_k}{\|\tilde{u}_k\|}\quad(k=2,\ldots,n)$$</div>
+
+<div class="box ex"><div class="bl">Legendre-polynomer $u_0$–$u_3$</div>
+<p>Med $\langle f,g\rangle=\int_{-1}^1 fg\,dx$ på $\{1,x,x^2,x^3\}$:</p>
+$$u_0=\sqrt{\tfrac{1}{2}},\quad u_1=\sqrt{\tfrac{3}{2}}\,x,\quad u_2=\sqrt{\tfrac{5}{8}}(3x^2-1),\quad u_3=\sqrt{\tfrac{7}{8}}(5x^3-3x)$$</div>
+
+<h2>Egenverdier og Egenvektorer</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$\lambda\in\mathbb{R}$ er en <strong>egenverdi</strong> for $A$ dersom $Ax=\lambda x$ for en $x\neq\mathbf{0}$ (<strong>egenvektor</strong>). Finnes via <strong>karakteristisk ligning</strong> $\det(A-\lambda I)=0$. <strong>Egenrom</strong>: $E_\lambda=\operatorname{Nul}(A-\lambda I)$.</p></div>
+
+<div class="box ex"><div class="bl">Eksempel 1 — diagonaliserbar</div>
+<p>$A=\begin{pmatrix}0&amp;0&amp;-2\\1&amp;2&amp;1\\1&amp;0&amp;3\end{pmatrix}$, egenverdier $\lambda_1=1$, $\lambda_2=2$. Egenvektorer danner basis for $\mathbb{R}^3$ → $A$ er diagonaliserbar.</p></div>
+
+<div class="box ex"><div class="bl">Eksempel 2 — ikke diagonaliserbar</div>
+<p>$M=\begin{pmatrix}5&amp;6&amp;2\\0&amp;-1&amp;-8\\1&amp;0&amp;-2\end{pmatrix}$, $\lambda_1=-4$, $\lambda_2=3$ (algebr. mult. 2), men $\dim(E_3)=1\lt 2$. $M$ er <em>ikke</em> diagonaliserbar.</p></div>
+
+<h2>Diagonalisering</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+<p>$A\in M_{n\times n}$ er <strong>diagonaliserbar</strong> $\Leftrightarrow$ $A$ har $n$ lineært uavhengige egenvektorer. Da er $A=PDP^{-1}$ med $D=\operatorname{diag}(\lambda_1,\ldots,\lambda_n)$ og $P=\begin{pmatrix}p_1&amp;\cdots&amp;p_n\end{pmatrix}$.</p></div>
+</section>
+
+<!-- ══════════════════════════════ UKE 8 ══════════════════════════════ -->
+<section id="uke8" class="lecture">
+<div class="lh"><div class="ln">Uke 8</div><h1 class="lt">Diagonalisering og Differensialligninger</h1>
+<p class="ld">Ortogonal diagonalisering, spektralteoremet, lineære ODE-systemer og komplekse egenverdier</p></div>
+
+<h2>Ortogonal Diagonalisering</h2>
+<div class="box def"><div class="bl">Ortogonal matrise</div>
+<p>$P$ er <strong>ortogonal</strong> dersom $P^TP=I$ (dvs. $P^{-1}=P^T$). Kolonnene danner ortonormal basis.</p></div>
+
+<div class="box thm"><div class="bl">Spektralteoremet</div>
+<p>$A$ er <strong>ortogonalt diagonaliserbar</strong> $\Leftrightarrow$ $A=A^T$ (<strong>symmetrisk</strong>). Da eksisterer ortogonal $P$ og reell diagonal $D$ med $A=PDP^T$. Egenverdiene er reelle; egenvektorer til ulike egenverdier er ortogonale.</p></div>
+
+<h2>Lineære ODE-Systemer</h2>
+<p>$\mathbf{y}'(t)=A\mathbf{y}(t)$, $\mathbf{y}(t_0)=\mathbf{y}_0$.</p>
+<div class="box alg"><div class="bl">Løsningsmetode</div>
+<ol>
+<li>Diagonaliser: $A=PDP^{-1}$</li>
+<li>Sett $\mathbf{z}=P^{-1}\mathbf{y}$: $\mathbf{z}'=D\mathbf{z}$ gir $z_i'=\lambda_i z_i$</li>
+<li>Løs: $z_i(t)=c_i e^{\lambda_i t}$</li>
+<li>Tilbake: $\mathbf{y}(t)=P\mathbf{z}(t)=c_1 e^{\lambda_1 t}\mathbf{p}_1+\cdots+c_n e^{\lambda_n t}\mathbf{p}_n$</li>
+</ol></div>
+
+<p><strong>Inhomogent system</strong> $\mathbf{y}'=A\mathbf{y}+\mathbf{b}$: $\mathbf{y}=\mathbf{y}_h+\mathbf{y}_s$ (superposisjonsprinsippet).</p>
+
+<h2>Komplekse Egenverdier</h2>
+<p>Reell $A$ kan ha konjugatpar $\lambda=\alpha\pm\beta i$. Løsningen uttrykkes med $e^{\alpha t}\cos(\beta t)$ og $e^{\alpha t}\sin(\beta t)$.</p>
+<div class="box ex"><div class="bl">Eksempel — rent imaginære egenverdier</div>
+<p>$\lambda=\pm 3i$ ($\alpha=0$): ren oscillasjon. Løsning: $y(t)=A\cos(3t)+B\sin(3t)=2\cos(3t+\pi/6)$.</p></div>
+
+<h3>Applikasjoner</h3>
+<ul>
+<li>Elektriske kretser (to sløyfer): $2\times 2$ system</li>
+<li>To masser og fjærer: $4\times 4$ matrisesystem</li>
+<li>2. ordens ODE: $y''+py'+qy=0 \;\Leftrightarrow\; \mathbf{z}'=A\mathbf{z}$ med $\mathbf{z}=(y,y')^T$</li>
+</ul>
+</section>
+
+<!-- ══════════════════════════════ UKE 9 ══════════════════════════════ -->
+<section id="uke9" class="lecture">
+<div class="lh"><div class="ln">Uke 9</div><h1 class="lt">Numerisk Løsning av ODEer I</h1>
+<p class="ld">Eulers metoder, trapesmetoden, Runge-Kutta, feilanalyse og Butcher-tablå</p></div>
+
+<h2>Initialverdiproblemet</h2>
+<p>IVP: $y'(t)=f(t,y(t))$, $y(t_0)=y_0$. Numerisk løsning: tabell $u_0,u_1,\ldots,u_N$ med $u_n\approx y(t_n)$, $t_n=t_0+nh$.</p>
+<div class="box def"><div class="bl">Metodens orden</div>
+<p>Orden $p$: global feil $|y_n-u_n|\leq Ch^p$.</p></div>
+
+<div class="box thm"><div class="bl">Eksistens og entydighet (Picard-Lindelöf)</div>
+<p>Dersom $f$ er <strong>Lipschitz</strong> i $y$: $|f(t,y_1)-f(t,y_2)|\leq L|y_1-y_2|$, har IVP en unik løsning.</p></div>
+
+<h2>Forlengs Euler</h2>
+<div class="box def"><div class="bl">Metode — orden 1, eksplisitt</div>
+$$u_{n+1}=u_n+h\,f(t_n,u_n)$$
+<p>Lokal feil $O(h^2)$. Global feil: $|e_n|\leq\dfrac{e^{L(t_n-t_0)}-1}{L}\cdot\dfrac{M}{2}\cdot h=O(h)$, $M=\max|y''|$.</p></div>
+
+<h2>Baklengs Euler</h2>
+<div class="box def"><div class="bl">Metode — orden 1, implisitt</div>
+$$u_{n+1}=u_n+h\,f(t_{n+1},u_{n+1})$$
+<p>Krever løsning av en ligning for $u_{n+1}$ per steg. Ubetinget stabilt (A-stabilt).</p></div>
+
+<h2>Forbedret Euler / Heuns metode</h2>
+<div class="box def"><div class="bl">Metode — orden 2, eksplisitt</div>
+$$K_1=f(t_n,u_n),\quad K_2=f(t_n+h,\;u_n+hK_1)$$
+$$u_{n+1}=u_n+\frac{h}{2}(K_1+K_2)$$</div>
+
+<h2>Modifisert Euler</h2>
+<div class="box def"><div class="bl">Metode — orden 2, eksplisitt</div>
+$$K_1=f(t_n,u_n),\quad K_2=f\!\left(t_n+\tfrac{h}{2},\;u_n+\tfrac{h}{2}K_1\right)$$
+$$u_{n+1}=u_n+hK_2$$</div>
+
+<h2>Trapesmetoden (Crank-Nicolson)</h2>
+<div class="box def"><div class="bl">Metode — orden 2, implisitt</div>
+$$K_1=f(t_n,u_n),\quad K_2=f\!\left(t_{n+1},\;u_n+\tfrac{h}{2}(K_1+K_2)\right)$$
+$$u_{n+1}=u_n+\frac{h}{2}(K_1+K_2)$$
+<p>Lokal feil $O(h^3)$, global feil $O(h^2)$.</p></div>
+
+<h2>Generell Runge-Kutta / Butcher-tablå</h2>
+<div class="box def"><div class="bl">$s$-trinns RK-metode</div>
+$$K_i=f\!\left(t_n+c_i h,\;u_n+h\sum_{j=1}^s a_{ij}K_j\right),\qquad u_{n+1}=u_n+h\sum_{i=1}^s b_i K_i$$
+<p><strong>Butcher-tablå</strong>: $c|A$ over $b^T$. <strong>Eksplisitt</strong>: $a_{ij}=0$ for $j\geq i$.</p></div>
+
+<table>
+<tr><th>Metode</th><th>$c$</th><th>$b$</th><th>Orden</th><th>Type</th></tr>
+<tr><td>Forlengs Euler</td><td>$0$</td><td>$1$</td><td>1</td><td>Ekspl.</td></tr>
+<tr><td>Baklengs Euler</td><td>$1$</td><td>$1$</td><td>1</td><td>Impl.</td></tr>
+<tr><td>Heun (Forb. Euler)</td><td>$0,\;1$</td><td>$\tfrac{1}{2},\;\tfrac{1}{2}$</td><td>2</td><td>Ekspl.</td></tr>
+<tr><td>Modifisert Euler</td><td>$0,\;\tfrac{1}{2}$</td><td>$0,\;1$</td><td>2</td><td>Ekspl.</td></tr>
+<tr><td>Trapesmetoden</td><td>$0,\;1$</td><td>$\tfrac{1}{2},\;\tfrac{1}{2}$</td><td>2</td><td>Impl.</td></tr>
+</table>
+</section>
+
+<!-- ══════════════════════════════ UKE 10 ══════════════════════════════ -->
+<section id="uke10" class="lecture">
+<div class="lh"><div class="ln">Uke 10</div><h1 class="lt">Numerisk Løsning av ODEer II</h1>
+<p class="ld">RK4, stabilitet, Lotka-Volterra, numerisk derivasjon og leapfrog</p></div>
+
+<h2>Klassisk Runge-Kutta 4 (RK4)</h2>
+<div class="box def"><div class="bl">RK4 — orden 4, eksplisitt, 4 nivåer</div>
+$$K_1=f(t_n,u_n),\quad K_2=f\!\left(t_n+\tfrac{h}{2},u_n+\tfrac{h}{2}K_1\right)$$
+$$K_3=f\!\left(t_n+\tfrac{h}{2},u_n+\tfrac{h}{2}K_2\right),\quad K_4=f(t_n+h,u_n+hK_3)$$
+$$u_{n+1}=u_n+\frac{h}{6}(K_1+2K_2+2K_3+K_4)$$
+<p>Global feil $O(h^4)$.</p></div>
+
+<h2>Stabilitet</h2>
+<p>Test-ligning: $y'=\lambda y$, $\operatorname{Re}(\lambda)\lt 0$. En metode er stabil dersom den diskrete løsningen ikke vokser ubegrenset.</p>
+<ul>
+<li><strong>Forlengs Euler</strong>: stabilt for $|1+h\lambda|\leq 1$, krav $h|\lambda|\leq 2$ — kondisjonelt stabilt</li>
+<li><strong>Baklengs Euler</strong>: stabilt for alle $\operatorname{Re}(\lambda)\lt 0$ — ubetinget stabilt (A-stabilt)</li>
+<li><strong>RK4</strong>: større stabilitetsregion enn Euler, men fortsatt kondisjonelt stabilt</li>
+</ul>
+
+<div class="box ex"><div class="bl">Lotka-Volterra (rovdyr-byttedyr)</div>
+$$\frac{dx}{dt}=ax-bxy,\qquad\frac{dy}{dt}=-cy+dxy$$
+<p>$x$ = byttedyr, $y$ = rovdyr. Periodiske løsninger i faseplanet. Løs numerisk med RK4.</p></div>
+
+<h2>Numerisk Derivasjon</h2>
+<ul>
+<li><strong>Fremover-differanse</strong>: $f'(x)\approx\dfrac{f(x+h)-f(x)}{h}$, feil $O(h)$</li>
+<li><strong>Sentral-differanse</strong>: $f'(x)\approx\dfrac{f(x+h)-f(x-h)}{2h}$, feil $O(h^2)$</li>
+<li><strong>Andre deriverte</strong>: $f''(x)\approx\dfrac{f(x+h)-2f(x)+f(x-h)}{h^2}$, feil $O(h^2)$</li>
+</ul>
+
+<h2>Leapfrog / Störmer-Verlet</h2>
+<p>For $y''=g(t,y)$ (ingen $y'$-avhengighet):</p>
+$$v_{n+1/2}=v_{n-1/2}+h\,g(t_n,y_n),\qquad y_{n+1}=y_n+h\,v_{n+1/2}$$
+<p>Symplektisk (bevarer energi på lang sikt), orden 2. Brukes i mekanikk-simulasjoner.</p>
+</section>
+
+<!-- ══════════════════════════════ UKE 11 ══════════════════════════════ -->
+<section id="uke11" class="lecture">
+<div class="lh"><div class="ln">Uke 11</div><h1 class="lt">Rekker og Konvergenstester</h1>
+<p class="ld">Tallfølger, uendelige rekker, geometrisk rekke, $p$-rekker og klassiske konvergenstester</p></div>
+
+<h2>Tallfølger og Rekker</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$\sum_{n=1}^\infty a_n$ har delsummer $S_N=\sum_{n=1}^N a_n$. Rekken <strong>konvergerer</strong> til $S$ dersom $\lim_{N\to\infty}S_N=S$. Ellers <strong>divergerer</strong> den.</p></div>
+
+<div class="box thm"><div class="bl">Geometrisk rekke</div>
+$$\sum_{n=0}^\infty k^n=\frac{1}{1-k}\quad\text{for }|k|\lt 1$$
+<p>Divergerer for $|k|\geq 1$. Eks: $\tfrac{1}{2}+\tfrac{1}{4}+\tfrac{1}{8}+\cdots=1$.</p></div>
+
+<div class="box thm"><div class="bl">Nødvendig betingelse</div>
+<p>$\sum a_n$ konvergerer $\Rightarrow\lim a_n=0$. Obs: $\sum\frac{1}{n}$ divergerer selv om $\frac{1}{n}\to 0$.</p></div>
+
+<h2>p-Rekker</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+$$\sum_{n=1}^\infty\frac{1}{n^p}\;\begin{cases}\text{konvergerer}&p\gt 1\\\text{divergerer}&p\leq 1\end{cases}$$
+<p>$\displaystyle\sum_{n=1}^\infty\frac{1}{n^2}=\frac{\pi^2}{6}$ (Euler 1735). Harmonisk rekke $\sum\frac{1}{n}$ divergerer.</p></div>
+
+<h2>Integraltesten</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+<p>$a_n=f(n)$, $f$ positiv og ikke-voksende på $[1,\infty)$:</p>
+$$\sum a_n\text{ konvergerer}\iff\int_1^\infty f(x)\,dx\text{ konvergerer}$$
+<p>Eks: $\sum\frac{1}{n(\ln n)^2}$ konvergerer; $\sum\frac{1}{n\ln n}$ divergerer.</p></div>
+
+<h2>Leibniz' test (Alternerende rekker)</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+<p>$\sum(-1)^n a_n$ konvergerer dersom $|a_n|\geq|a_{n+1}|$ og $|a_n|\to 0$.</p>
+<ul>
+<li>$1-\tfrac{1}{3}+\tfrac{1}{5}-\cdots=\tfrac{\pi}{4}$ (Leibniz 1676)</li>
+<li>$1-\tfrac{1}{2}+\tfrac{1}{3}-\cdots=\ln 2$</li>
+</ul></div>
+
+<h2>Sammenligningstesten</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+<p>$0\leq a_n\leq b_n$: $\sum b_n$ konvergerer $\Rightarrow\sum a_n$ konvergerer; $\sum a_n$ divergerer $\Rightarrow\sum b_n$ divergerer.</p></div>
+
+<h2>Forholdstesten</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+<p>$L=\lim_{n\to\infty}\left|\dfrac{a_{n+1}}{a_n}\right|$: $L\lt 1$ absolutt konvergens, $L\gt 1$ divergens, $L=1$ ingen info.</p>
+<p>Eks: $\sum\frac{n^5}{2^n}$ ($L=\tfrac{1}{2}$, konv.); $\sum\frac{3^n}{n^2}$ ($L=3\gt 1$, div.); $\sum\frac{n!}{n^n}$ ($L=\tfrac{1}{e}\lt 1$, konv.).</p></div>
+</section>
+
+<!-- ══════════════════════════════ UKE 12 ══════════════════════════════ -->
+<section id="uke12" class="lecture">
+<div class="lh"><div class="ln">Uke 12</div><h1 class="lt">Potensrekker og Taylor-rekker</h1>
+<p class="ld">Konvergensradius, Maclaurin-rekker, binomialrekken og restleddet</p></div>
+
+<h2>Rotstesten</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+<p>$L=\lim_{n\to\infty}\sqrt[n]{|a_n|}$: absolutt konvergens for $L\lt 1$, divergens for $L\gt 1$.</p></div>
+
+<h2>Potensrekker</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<p>$\displaystyle\sum_{n=0}^\infty b_n(x-a)^n$ konvergerer absolutt for $|x-a|\lt R$ (<strong>konvergensradius</strong>).</p>
+$$R=\lim_{n\to\infty}\left|\frac{b_n}{b_{n+1}}\right|\quad\text{(forholdstesten)}$$</div>
+
+<h2>Taylor- og Maclaurin-rekker</h2>
+<div class="box def"><div class="bl">Taylor-rekke rundt $a$</div>
+$$f(x)=\sum_{n=0}^\infty\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
+
+<table>
+<tr><th>Funksjon</th><th>Maclaurin-rekke</th><th>$R$</th></tr>
+<tr><td>$e^x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{x^n}{n!}$</td><td>$\infty$</td></tr>
+<tr><td>$\sin x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{(-1)^nx^{2n+1}}{(2n+1)!}$</td><td>$\infty$</td></tr>
+<tr><td>$\cos x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{(-1)^nx^{2n}}{(2n)!}$</td><td>$\infty$</td></tr>
+<tr><td>$\ln(1+x)$</td><td>$\displaystyle\sum_{n=1}^\infty\frac{(-1)^{n+1}x^n}{n}$</td><td>$1$</td></tr>
+<tr><td>$\dfrac{1}{1-x}$</td><td>$\displaystyle\sum_{n=0}^\infty x^n$</td><td>$1$</td></tr>
+<tr><td>$\arctan x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{(-1)^nx^{2n+1}}{2n+1}$</td><td>$1$</td></tr>
+</table>
+
+<h2>Binomialrekken</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+$$(1+x)^\alpha=\sum_{n=0}^\infty\binom{\alpha}{n}x^n,\quad|x|\lt 1,\quad\binom{\alpha}{n}=\frac{\alpha(\alpha-1)\cdots(\alpha-n+1)}{n!}$$</div>
+
+<h2>Restleddet</h2>
+<p>$f(x)=T_N(x)+R_N(x)$ med $\displaystyle|R_N(x)|\leq\frac{M_{N+1}}{(N+1)!}|x-a|^{N+1}$, $M_{N+1}=\max|f^{(N+1)}|$.</p>
+</section>
+
+<!-- ══════════════════════════════ UKE 13 ══════════════════════════════ -->
+<section id="uke13" class="lecture">
+<div class="lh"><div class="ln">Uke 13</div><h1 class="lt">Potensrekker og Fouriertilnærming</h1>
+<p class="ld">Leddvis derivasjon/integrasjon, Fourier-koeffisienter, firkantfunksjon og kompleks form</p></div>
+
+<h2>Leddvis Derivasjon og Integrasjon</h2>
+<div class="box thm"><div class="bl">Teorem</div>
+<p>For $f(x)=\sum_{n=0}^\infty b_n x^n$, $R\gt 0$:</p>
+$$f'(x)=\sum_{n=1}^\infty nb_nx^{n-1},\qquad\int_0^x f(t)\,dt=\sum_{n=0}^\infty\frac{b_n}{n+1}x^{n+1}\quad(|x|\lt R)$$
+<p>Integrasjon kan utvide konvergensintervallet til endepunktene.</p></div>
+
+<div class="box ex"><div class="bl">Eksempel — $\arctan x$ og $\pi/4$</div>
+<p>Fra $\frac{1}{1+x^2}=\sum(-1)^nx^{2n}$, integrer:</p>
+$$\arctan x=x-\frac{x^3}{3}+\frac{x^5}{5}-\frac{x^7}{7}+\cdots,\quad x\in[-1,1]$$
+<p>$x=1$: $\quad1-\tfrac{1}{3}+\tfrac{1}{5}-\tfrac{1}{7}+\cdots=\dfrac{\pi}{4}$</p></div>
+
+<div class="box ex"><div class="bl">Eksempel — Feil-integralet</div>
+<p>Fra $e^{-t^2}=\sum\frac{(-1)^nt^{2n}}{n!}$:</p>
+$$E(x)=\int_0^xe^{-t^2}\,dt=\sum_{n=0}^\infty\frac{(-1)^n}{(2n+1)n!}x^{2n+1}$$
+<p>$E(1)\approx 1-\tfrac{1}{3}+\tfrac{1}{10}-\tfrac{1}{42}+\tfrac{1}{216}\approx 0.74748$</p></div>
+
+<h2>Fouriertilnærming</h2>
+<p>Indreprodukt: $\langle f,g\rangle=\frac{1}{\pi}\int_{-\pi}^\pi f(x)g(x)\,dx$ på $C[-\pi,\pi]$.</p>
+<div class="box def"><div class="bl">Fouriertilnærming og koeffisienter</div>
+$$f_N(x)=\frac{a_0}{2}+\sum_{n=1}^N\bigl(a_n\cos(nx)+b_n\sin(nx)\bigr)$$
+$$a_n=\frac{1}{\pi}\int_{-\pi}^\pi f(x)\cos(nx)\,dx,\qquad b_n=\frac{1}{\pi}\int_{-\pi}^\pi f(x)\sin(nx)\,dx$$
+<p>$f_N$ er den beste $L^2$-tilnærming til $f$ i $\operatorname{Span}\!\left\{\tfrac{1}{\sqrt{2}},\cos x,\ldots,\cos Nx,\sin x,\ldots,\sin Nx\right\}$.</p></div>
+
+<div class="box ex"><div class="bl">Firkantfunksjon</div>
+<p>$f(x)=\begin{cases}-1&amp;-\pi\lt x\lt 0\\1&amp;0\lt x\lt\pi\end{cases}$. Odde funksjon: $a_n=0$, $b_n=\frac{4}{n\pi}$ for odde $n$:</p>
+$$f_{2N+1}(x)=\frac{4}{\pi}\!\left(\sin x+\frac{\sin 3x}{3}+\frac{\sin 5x}{5}+\cdots+\frac{\sin(2N+1)x}{2N+1}\right)$$</div>
+
+<h2>Kompleks Form</h2>
+<p>Med $\langle f,g\rangle=\frac{1}{2\pi}\int_{-\pi}^\pi\overline{f}\,g\,dx$: $\langle e^{inx},e^{imx}\rangle=\delta_{nm}$.</p>
+$$f_N(x)=\sum_{n=-N}^Nc_ne^{inx},\qquad c_n=\frac{1}{2\pi}\int_{-\pi}^\pi f(x)e^{-inx}\,dx$$
+<p>Sammenheng: $a_n=2\operatorname{Re}(c_n)$, $b_n=-2\operatorname{Im}(c_n)$ for $n\gt 0$; $c_0=a_0/2$.</p>
+</section>
+
+<!-- ══════════════════════════════ UKE 15 ══════════════════════════════ -->
+<section id="uke15" class="lecture">
+<div class="lh"><div class="ln">Uke 15</div><h1 class="lt">Fourierrekker og Konvergensteori</h1>
+<p class="ld">Fra tilnærming til rekke, Fouriers teorem, konvergenstyper og $x^2$-eksempelet</p></div>
+
+<h2>Fourierrekken</h2>
+$$S_f(x)=\frac{a_0}{2}+\sum_{n=1}^\infty\bigl(a_n\cos(nx)+b_n\sin(nx)\bigr)=\sum_{n=-\infty}^\infty c_ne^{inx}$$
+
+<h2>Fouriers Teorem</h2>
+<div class="box thm"><div class="bl">Fouriers teorem (Dirichlet)</div>
+<p>La $f$ være stykkevis kontinuerlig på $[-\pi,\pi]$:</p>
+<ul>
+<li>$f$ kont. i $x$: $S_f(x)=f(x)$</li>
+<li>Sprang i $x$: $S_f(x)=\tfrac{1}{2}(f(x^+)+f(x^-))$</li>
+<li>Endepunkter $x=\pm\pi$: $S_f(\pm\pi)=\tfrac{1}{2}(f(-\pi^+)+f(\pi^-))$</li>
+</ul>
+<p>Utenfor $[-\pi,\pi]$: $S_f$ er den $2\pi$-periodiske utvidelsen av $f$.</p></div>
+
+<div class="box ex"><div class="bl">Eksempel — $f(x)=x^2$ på $[-1,1]$</div>
+$$a_0=\frac{2}{3},\quad a_n=\frac{4(-1)^n}{n^2\pi^2},\quad b_n=0$$
+$$S_f(x)=\frac{1}{3}+\frac{4}{\pi^2}\sum_{n=1}^\infty\frac{(-1)^n}{n^2}\cos(n\pi x)$$
+<p>Sett $x=0$: $\displaystyle\sum_{n=1}^\infty\frac{(-1)^{n+1}}{n^2}=\frac{\pi^2}{12}$</p></div>
+
+<h2>Konvergenstyper</h2>
+<div class="box def"><div class="bl">Definisjon</div>
+<ul>
+<li><strong>Punktvis</strong>: $f_N(x_0)\to f(x_0)$ for hvert punkt $x_0$</li>
+<li><strong>Uniform</strong>: $\max_x|f_N(x)-f(x)|\to 0$ (alle punkter med samme hastighet)</li>
+<li><strong>$L^2$ / minste kvadrater</strong>: $\int|f-f_N|^2\,dx\to 0$</li>
+</ul>
+<p>Hierarki: uniform $\Rightarrow$ punktvis $\Rightarrow$ $L^2$.</p></div>
+
+<ul>
+<li>$f(x)=x^2$: <strong>uniform konvergens</strong> (glatt)</li>
+<li>Firkantfunksjon: punktvis (ikke i sprangpunkter) og $L^2$, men <em>ikke</em> uniform — <strong>Gibbs-fenomen</strong> (~9% overshoot ved sprang)</li>
+</ul>
+</section>
+
+<!-- ══════════════════════════════ UKE 16 ══════════════════════════════ -->
+<section id="uke16" class="lecture">
+<div class="lh"><div class="ln">Uke 16</div><h1 class="lt">Fourierrekker: Avansert</h1>
+<p class="ld">Cosinus-representasjon, halvrekker, ODE med periodisk høyreside og konvergensoppsummering</p></div>
+
+<h2>Cosinus-representasjon (Amplitude-fase)</h2>
+<div class="box def"><div class="bl">Amplitude-fase-form</div>
+$$S_f(x)=\frac{a_0}{2}+\sum_{n=1}^\infty A_n\cos(nx-\theta_n)$$
+<p>$A_n=\sqrt{a_n^2+b_n^2}$ (amplitude), $\theta_n=\arctan(b_n/a_n)$ (fase).</p></div>
+
+<div class="box ex"><div class="bl">Firkantfunksjon</div>
+<p>$a_n=0$, $b_n=4/(n\pi)$ for odde $n$ $\Rightarrow$ $A_n=b_n$, $\theta_n=\pi/2$:</p>
+$$S_f(x)=\frac{4}{\pi}\sum_{k=0}^\infty\frac{1}{2k+1}\cos\!\left((2k+1)x-\frac{\pi}{2}\right)$$</div>
+
+<h2>Halvrekker</h2>
+<p>For $f$ på $[0,\pi]$ finnes to $2\pi$-periodiske utvidelser:</p>
+<ul>
+<li><strong>Like utvidelse</strong> → cosinusrekke: $a_n=\dfrac{2}{\pi}\int_0^\pi f(x)\cos(nx)\,dx$</li>
+<li><strong>Odde utvidelse</strong> → sinusrekke: $b_n=\dfrac{2}{\pi}\int_0^\pi f(x)\sin(nx)\,dx$</li>
+</ul>
+
+<div class="box ex"><div class="bl">Eksempel — $f(x)=\tfrac{\pi}{2}-x$ på $[0,\pi]$</div>
+<p>Cosinusrekke (like utvidelse):</p>
+$$S^c_f(x)=\frac{4}{\pi}\sum_{k=0}^\infty\frac{\cos((2k+1)x)}{(2k+1)^2}$$
+<p>Sinusrekke (odde utvidelse):</p>
+$$S^s_f(x)=\frac{1}{\pi}\sum_{k=1}^\infty\frac{\sin(2kx)}{k}$$</div>
+
+<h2>ODE med Periodisk Høyreside</h2>
+<p>$y''+y'+y=r(t)$, $r(t)$ har Fourierrekke $\sum a_n\cos(nt)+b_n\sin(nt)$.</p>
+<p><strong>Homogen løsning</strong> ($\lambda^2+\lambda+1=0\Rightarrow\lambda=-\tfrac{1}{2}\pm\tfrac{\sqrt{3}}{2}i$):</p>
+$$y_h(t)=e^{-t/2}\!\left(K_1\cos\!\left(\tfrac{\sqrt{3}}{2}t\right)+K_2\sin\!\left(\tfrac{\sqrt{3}}{2}t\right)\right)$$
+<p>For hvert $n$ finnes spesiell løsning $A_n\cos(nt)+B_n\sin(nt)$ ved å sette inn og løse et $2\times 2$-system. Full løsning: $y=y_h+\sum_n y_{s,n}$; $K_1,K_2$ bestemmes fra initialverdier.</p>
+
+<h2>Oppsummering: Konvergenstyper</h2>
+<table>
+<tr><th>Type</th><th>Betingelse</th><th>Styrke</th></tr>
+<tr><td>Uniform</td><td>$f$ kontinu., stykkevis glatt</td><td>Sterkest</td></tr>
+<tr><td>Punktvis</td><td>$f$ stykkevis kontinu.</td><td>Middels</td></tr>
+<tr><td>$L^2$ (minste kv.)</td><td>$f\in L^2[-\pi,\pi]$</td><td>Svakest</td></tr>
+</table>
+</section>
+
+</main>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.lecture').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.wb').forEach(el => el.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelector('.wb[data-w="' + id + '"]').classList.add('active');
+  window.scrollTo(0, 0);
+  document.querySelector('.sidebar').classList.remove('open');
+}
+</script>
+</body>
+</html>
