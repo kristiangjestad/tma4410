@@ -183,10 +183,28 @@
   .empty { text-align: center; padding: 48px 24px; color: var(--text3); font-size: 14px; display: none; }
   .empty.show { display: block; }
 
+  @media (max-width: 680px) {
+    .page { padding: 24px 14px 60px; }
+    header h1 { font-size: 20px; }
+    .controls { padding: 14px; }
+    .controls-row { flex-direction: column; gap: 10px; }
+    .ctrl-group, .search-wrap { min-width: 0; flex: none; width: 100%; }
+    .filter-pills { gap: 5px; }
+    .pill { font-size: 11px; padding: 4px 10px; }
+    .results-info { font-size: 12px; }
+  }
   @media (max-width: 600px) {
     .card { grid-template-columns: 1fr; }
     .card-left { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
     .fagkode { display: none; }
+    .card-title { font-size: 13px; }
+    .card-desc { font-size: 12px; }
+    .legend { gap: 7px; }
+    .leg { font-size: 11px; }
+  }
+  @media (max-width: 400px) {
+    body { font-size: 14px; }
+    header h1 { font-size: 18px; }
   }
 </style>
 </head>

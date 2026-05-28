@@ -80,30 +80,56 @@ li { margin-bottom: 3px; }
 .ex  { border-color: #b45309; background: #fffcf0; } .ex  .bl { color: #92400e; }
 .alg { border-color: #7c3aed; background: #f5f3ff; } .alg .bl { color: #5b21b6; }
 /* ── Tables ── */
-table { border-collapse: collapse; margin: 12px 0; font-size: 13.5px; width: 100%; }
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 12px 0; }
+table { border-collapse: collapse; font-size: 13.5px; width: 100%; min-width: 420px; margin: 0; }
 th, td { border: 1px solid var(--border2); padding: 6px 10px; text-align: center; }
 th { background: var(--surface2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
-.katex-display { overflow-x: auto; }
+.katex-display { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 2px 0; }
 hr.sep { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
-@media (max-width: 780px) {
-  .sidebar { transform: translateX(-218px); width: 218px; z-index: 100; transition: transform .2s; }
-  .sidebar.open { transform: translateX(0); }
-  .main { margin-left: 0; padding: 60px 18px 60px; }
-  .menu { display: flex; }
+/* ── Overlay ── */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.45); z-index: 90; cursor: pointer;
 }
+.overlay.show { display: block; }
+/* ── Menu button ── */
 .menu {
-  display: none; position: fixed; top: 10px; left: 10px; z-index: 200;
-  background: var(--sbg); color: #fff; border: none; border-radius: 7px;
-  padding: 7px 11px; cursor: pointer; font-size: 15px; align-items: center;
+  display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+  background: var(--sbg); color: #fff; border: none; border-radius: 9px;
+  width: 38px; height: 38px; cursor: pointer; font-size: 16px;
+  align-items: center; justify-content: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,.35);
 }
-@media (min-width: 781px) { .menu { display: none !important; } }
+/* ── Mobile ── */
+@media (max-width: 780px) {
+  .sidebar {
+    transform: translateX(-218px); width: 218px;
+    z-index: 100; transition: transform .22s ease;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 58px 16px 72px; }
+  .menu { display: flex; }
+  .lt { font-size: 19px; }
+  h2 { font-size: 15px; margin: 22px 0 9px; }
+  .box { padding: 9px 12px; }
+  table { font-size: 12px; }
+  th, td { padding: 5px 7px; }
+  .lh { margin-bottom: 20px; padding-bottom: 14px; }
+  ul, ol { margin-left: 16px; }
+}
+@media (max-width: 400px) {
+  .main { padding: 54px 12px 64px; }
+  .lt { font-size: 17px; }
+  body { font-size: 14px; }
+}
 </style>
 </head>
 <body>
 
-<button class="menu" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+<button class="menu" id="menuBtn" onclick="toggleSidebar()" aria-label="Åpne meny">☰</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
-<aside class="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="sb-head">
     <div class="sb-title">TMA4410 — Mat 2A</div>
     <div class="sb-sub">Forelesningsnotater · NTNU 2026</div>
@@ -416,14 +442,14 @@ $$u_{n+1}=u_n+\frac{h}{2}(K_1+K_2)$$
 $$K_i=f\!\left(t_n+c_i h,\;u_n+h\sum_{j=1}^s a_{ij}K_j\right),\qquad u_{n+1}=u_n+h\sum_{i=1}^s b_i K_i$$
 <p><strong>Butcher-tablå</strong>: $c|A$ over $b^T$. <strong>Eksplisitt</strong>: $a_{ij}=0$ for $j\geq i$.</p></div>
 
-<table>
+<div class="tbl-wrap"><table>
 <tr><th>Metode</th><th>$c$</th><th>$b$</th><th>Orden</th><th>Type</th></tr>
 <tr><td>Forlengs Euler</td><td>$0$</td><td>$1$</td><td>1</td><td>Ekspl.</td></tr>
 <tr><td>Baklengs Euler</td><td>$1$</td><td>$1$</td><td>1</td><td>Impl.</td></tr>
 <tr><td>Heun (Forb. Euler)</td><td>$0,\;1$</td><td>$\tfrac{1}{2},\;\tfrac{1}{2}$</td><td>2</td><td>Ekspl.</td></tr>
 <tr><td>Modifisert Euler</td><td>$0,\;\tfrac{1}{2}$</td><td>$0,\;1$</td><td>2</td><td>Ekspl.</td></tr>
 <tr><td>Trapesmetoden</td><td>$0,\;1$</td><td>$\tfrac{1}{2},\;\tfrac{1}{2}$</td><td>2</td><td>Impl.</td></tr>
-</table>
+</table></div>
 </section>
 
 <!-- ══════════════════════════════ UKE 10 ══════════════════════════════ -->
@@ -526,7 +552,7 @@ $$R=\lim_{n\to\infty}\left|\frac{b_n}{b_{n+1}}\right|\quad\text{(forholdstesten)
 <div class="box def"><div class="bl">Taylor-rekke rundt $a$</div>
 $$f(x)=\sum_{n=0}^\infty\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
 
-<table>
+<div class="tbl-wrap"><table>
 <tr><th>Funksjon</th><th>Maclaurin-rekke</th><th>$R$</th></tr>
 <tr><td>$e^x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{x^n}{n!}$</td><td>$\infty$</td></tr>
 <tr><td>$\sin x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{(-1)^nx^{2n+1}}{(2n+1)!}$</td><td>$\infty$</td></tr>
@@ -534,7 +560,7 @@ $$f(x)=\sum_{n=0}^\infty\frac{f^{(n)}(a)}{n!}(x-a)^n$$</div>
 <tr><td>$\ln(1+x)$</td><td>$\displaystyle\sum_{n=1}^\infty\frac{(-1)^{n+1}x^n}{n}$</td><td>$1$</td></tr>
 <tr><td>$\dfrac{1}{1-x}$</td><td>$\displaystyle\sum_{n=0}^\infty x^n$</td><td>$1$</td></tr>
 <tr><td>$\arctan x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{(-1)^nx^{2n+1}}{2n+1}$</td><td>$1$</td></tr>
-</table>
+</table></div>
 
 <h2>Binomialrekken</h2>
 <div class="box thm"><div class="bl">Teorem</div>
@@ -654,24 +680,36 @@ $$y_h(t)=e^{-t/2}\!\left(K_1\cos\!\left(\tfrac{\sqrt{3}}{2}t\right)+K_2\sin\!\le
 <p>For hvert $n$ finnes spesiell løsning $A_n\cos(nt)+B_n\sin(nt)$ ved å sette inn og løse et $2\times 2$-system. Full løsning: $y=y_h+\sum_n y_{s,n}$; $K_1,K_2$ bestemmes fra initialverdier.</p>
 
 <h2>Oppsummering: Konvergenstyper</h2>
-<table>
+<div class="tbl-wrap"><table>
 <tr><th>Type</th><th>Betingelse</th><th>Styrke</th></tr>
 <tr><td>Uniform</td><td>$f$ kontinu., stykkevis glatt</td><td>Sterkest</td></tr>
 <tr><td>Punktvis</td><td>$f$ stykkevis kontinu.</td><td>Middels</td></tr>
 <tr><td>$L^2$ (minste kv.)</td><td>$f\in L^2[-\pi,\pi]$</td><td>Svakest</td></tr>
-</table>
+</table></div>
 </section>
 
 </main>
 
 <script>
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('overlay');
+  const open = sb.classList.toggle('open');
+  ov.classList.toggle('show', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
 function show(id) {
   document.querySelectorAll('.lecture').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.wb').forEach(el => el.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelector('.wb[data-w="' + id + '"]').classList.add('active');
   window.scrollTo(0, 0);
-  document.querySelector('.sidebar').classList.remove('open');
+  // close sidebar on mobile after selection
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('overlay');
+  sb.classList.remove('open');
+  ov.classList.remove('show');
+  document.body.style.overflow = '';
 }
 </script>
 </body>
