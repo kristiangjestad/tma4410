@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMA4410 — Lineærtransformasjoner</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+<style>
+:root {
+  --bg: #f9f8f6;
+  --surface: #ffffff;
+  --surface2: #f3f2ef;
+  --border: #e4e2dc;
+  --border2: #ccc9c0;
+  --text: #1a1a18;
+  --text2: #5c5b56;
+  --text3: #9b9a94;
+  --accent: #2d5be3;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text);
+  font-size: 15px; line-height: 1.6;
+}
+.page { max-width: 860px; margin: 0 auto; padding: 44px 28px 100px; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text3); text-decoration: none;
+  margin-bottom: 24px; transition: color .15s;
+}
+.back-link:hover { color: var(--accent); }
+header { margin-bottom: 36px; }
+header h1 { font-size: 26px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 4px; }
+header p { color: var(--text2); font-size: 14px; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 6px; margin-bottom: 32px; flex-wrap: wrap; }
+.tab {
+  padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border2);
+  background: var(--surface); font-size: 13px; font-weight: 600;
+  color: var(--text2); cursor: pointer; transition: all .15s;
+}
+.tab:hover { border-color: var(--accent); color: var(--accent); }
+.tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.section { display: none; }
+.section.active { display: block; }
+
+/* ── Boxes ── */
+.box { border-left: 3px solid; padding: 11px 15px; margin: 14px 0; border-radius: 0 var(--radius) var(--radius) 0; }
+.bl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+.def  { border-color: #2d5be3; background: #f0f4ff; } .def  .bl { color: #1e40af; }
+.thm  { border-color: #0d7a5c; background: #f0fdf8; } .thm  .bl { color: #065f46; }
+.ex   { border-color: #b45309; background: #fffcf0; } .ex   .bl { color: #92400e; }
+.warn { border-color: #dc2626; background: #fff5f5; } .warn .bl { color: #991b1b; }
+.tip  { border-color: #7c3aed; background: #f5f3ff; } .tip  .bl { color: #5b21b6; }
+
+/* ── Proof template blocks ── */
+.proof-block {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 22px; margin: 18px 0;
+  box-shadow: var(--shadow);
+}
+.proof-block h3 {
+  font-size: 13px; font-weight: 700; color: var(--text); margin: 0 0 14px;
+  text-transform: none; letter-spacing: 0;
+}
+.step {
+  display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start;
+}
+.step-num {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+}
+.step-body { flex: 1; font-size: 14px; line-height: 1.7; }
+.step-body strong { color: var(--text); }
+.step-body code {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 5px; padding: 1px 6px; font-size: 13px; font-family: monospace;
+}
+.check { color: #0d7a5c; font-weight: 700; }
+.cross { color: #dc2626; font-weight: 700; }
+
+h2 { font-size: 16px; font-weight: 700; color: var(--text); margin: 32px 0 10px; letter-spacing: -.15px; }
+h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); margin: 18px 0 7px; }
+p { line-height: 1.7; margin-bottom: 9px; }
+ul, ol { margin: 7px 0 10px 20px; line-height: 1.7; }
+li { margin-bottom: 4px; }
+.katex-display { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 2px 0; }
+hr.sep { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+/* ── Tables ── */
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 14px 0; }
+table { border-collapse: collapse; font-size: 13.5px; width: 100%; min-width: 460px; }
+th, td { border: 1px solid var(--border2); padding: 7px 11px; }
+th { background: var(--surface2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; text-align: left; }
+.tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: .05em; }
+.tag-yes { background: #dcfce7; color: #166534; }
+.tag-no  { background: #fee2e2; color: #991b1b; }
+.tag-cond { background: #fef9c3; color: #854d0e; }
+
+/* ── Flashcards ── */
+.fc-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+.fc-progress { font-size: 13px; color: var(--text2); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; }
+.fc-btn { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface); font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: all .15s; }
+.fc-btn:hover { background: var(--surface2); }
+.fc-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.fc-btn.primary:hover { background: #2450c8; }
+
+.card-area { perspective: 1000px; margin: 0 auto 28px; max-width: 640px; }
+.card { position: relative; width: 100%; min-height: 290px; transform-style: preserve-3d; transition: transform .45s ease; cursor: pointer; }
+.card.flipped { transform: rotateY(180deg); }
+.card-face {
+  position: absolute; width: 100%; min-height: 290px;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow); display: flex; flex-direction: column;
+  justify-content: center; padding: 28px 30px;
+}
+.card-front { background: var(--surface); }
+.card-back  { background: #f0fdf8; transform: rotateY(180deg); border-color: #a7f3d0; }
+.card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); margin-bottom: 12px; }
+.card-front .card-label { color: #1e40af; }
+.card-back  .card-label { color: #065f46; }
+.card-title { font-size: 20px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 8px; }
+.card-hint  { font-size: 13px; color: var(--text2); }
+.card-body  { font-size: 14px; line-height: 1.75; }
+.card-body p { margin-bottom: 6px; }
+.card-body ul { margin-left: 18px; }
+.card-body ol { margin-left: 18px; }
+.flip-hint { text-align: center; font-size: 12px; color: var(--text3); margin-bottom: 22px; }
+.cat-badge { position: absolute; top: 16px; right: 16px; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .06em; }
+.cat-def    { background: #e0e7ff; color: #3730a3; }
+.cat-thm    { background: #dcfce7; color: #166534; }
+.cat-proof  { background: #f3e8ff; color: #6b21a8; }
+.cat-ex     { background: #fef9c3; color: #854d0e; }
+
+.dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin: 20px 0 0; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border2); transition: background .2s; cursor: pointer; }
+.dot.seen    { background: var(--text3); }
+.dot.current { background: var(--accent); transform: scale(1.3); }
+
+.result-row { display: flex; gap: 8px; justify-content: center; margin-top: 18px; }
+.res-btn { flex: 1; max-width: 160px; padding: 9px 0; border-radius: 8px; border: 2px solid; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
+.res-knew   { border-color: #0d7a5c; color: #065f46; background: #f0fdf8; }
+.res-knew:hover   { background: #dcfce7; }
+.res-review { border-color: #b45309; color: #92400e; background: #fffcf0; }
+.res-review:hover { background: #fef3c7; }
+
+.score-panel { text-align: center; padding: 40px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); max-width: 640px; margin: 0 auto; }
+.score-panel h2 { font-size: 22px; margin-bottom: 12px; }
+.score-num { font-size: 52px; font-weight: 800; color: var(--accent); line-height: 1; }
+.score-sub { font-size: 14px; color: var(--text2); margin: 8px 0 24px; }
+
+@media (max-width: 600px) {
+  .page { padding: 24px 14px 80px; }
+  header h1 { font-size: 20px; }
+  .card-title { font-size: 17px; }
+  .card-face { padding: 20px 18px; min-height: 250px; }
+  .card-body { font-size: 13px; }
+  h2 { font-size: 15px; margin: 24px 0 8px; }
+  .proof-block { padding: 14px 14px; }
+}
+@media (max-width: 400px) {
+  body { font-size: 14px; }
+  .card-title { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back-link" href="index.html">← Tilbake til forelesningsnotater</a>
+
+  <header>
+    <h1>Lineærtransformasjoner</h1>
+    <p>Definisjoner, bevis og oppskrifter for typiske eksamensoppgaver</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('ref', event)">Oversikt</button>
+    <button class="tab" onclick="switchTab('bevis', event)">Bevismal</button>
+    <button class="tab" onclick="switchTab('flash', event)">Flashkort</button>
+  </div>
+
+  <!-- ══════════ OVERSIKT ══════════ -->
+  <div class="section active" id="tab-ref">
+
+    <h2>1. Lineærtransformasjon</h2>
+    <div class="box def"><div class="bl">Definisjon</div>
+    <p>$T:V\to W$ er en <strong>lineærtransformasjon</strong> dersom for alle $u,v\in V$ og $r\in\mathbb{R}$:</p>
+    <ul>
+    <li><strong>Additivitet:</strong> $T(u+v) = T(u)+T(v)$</li>
+    <li><strong>Homogenitet:</strong> $T(ru) = rT(u)$</li>
+    </ul>
+    <p>Ekvivalent: $T(ru+sv) = rT(u)+sT(v)$ for alle $r,s\in\mathbb{R}$ (linearitet).</p></div>
+
+    <div class="box thm"><div class="bl">Nyttige konsekvenser</div>
+    <ul>
+    <li>$T(\mathbf{0}) = \mathbf{0}$ (alltid — ellers er ikke $T$ lineær)</li>
+    <li>$T(-v) = -T(v)$</li>
+    <li>$T(r_1 v_1 + \cdots + r_k v_k) = r_1 T(v_1) + \cdots + r_k T(v_k)$</li>
+    </ul></div>
+
+    <div class="box tip"><div class="bl">Rask eliminering</div>
+    <p>Sjekk $T(\mathbf{0})$ først: hvis $T(\mathbf{0}) \neq \mathbf{0}$ er $T$ <em>ikke</em> lineær — stopp der.</p></div>
+
+    <hr class="sep">
+    <h2>2. Kjerne og Bilde</h2>
+    <div class="box def"><div class="bl">Definisjon</div>
+    <p><strong>Kjerne:</strong> $\operatorname{Ker}T = \{v \in V \mid T(v) = \mathbf{0}_W\}$ — underrom av $V$</p>
+    <p><strong>Bilde (range):</strong> $\operatorname{Ran}T = T(V) = \{T(v) \mid v \in V\}$ — underrom av $W$</p></div>
+
+    <div class="box thm"><div class="bl">Rangteoremet</div>
+    $$\dim(\operatorname{Ran}T) + \dim(\operatorname{Ker}T) = \dim V$$
+    <p>Ofte kalt <em>dimensjonssetningen</em> eller nullity-rank theorem.</p></div>
+
+    <div class="box tip"><div class="bl">Hvordan finne Ker T</div>
+    <p>Løs $T(v) = \mathbf{0}$. Sett opp ligningssystemet og finn alle løsninger. Uttrykk svaret som et spenn.</p></div>
+
+    <div class="box tip"><div class="bl">Hvordan finne Ran T</div>
+    <p>Beregn $T(v_i)$ for alle basisvektorer $v_i$ i $V$. Span av disse bildene er $\operatorname{Ran}T$. Sjekk om de er lineært uavhengige for å finne dimensjonen.</p></div>
+
+    <hr class="sep">
+    <h2>3. Injektivitet og Surjektivitet</h2>
+    <div class="box thm"><div class="bl">Karakterisering</div>
+    <ul>
+    <li><strong>Injektiv</strong> (en-til-en): $T(u)=T(v) \Rightarrow u=v$ $\iff$ $\operatorname{Ker}T = \{\mathbf{0}\}$</li>
+    <li><strong>Surjektiv</strong> (på): $\operatorname{Ran}T = W$ $\iff$ $\dim(\operatorname{Ran}T) = \dim W$</li>
+    <li><strong>Bijektiv</strong> (isomorfi): injektiv <em>og</em> surjektiv $\iff$ $V \cong W$</li>
+    </ul></div>
+
+    <div class="box thm"><div class="bl">Dimensjonsargument</div>
+    <p>Hvis $\dim V = \dim W$ og $T$ er lineær:</p>
+    <ul>
+    <li>Injektiv $\iff$ surjektiv $\iff$ bijektiv</li>
+    <li>$\operatorname{Ker}T = \{\mathbf{0}\} \iff \operatorname{Ran}T = W$</li>
+    </ul>
+    <p>Kan spare mye arbeid: vis bare én av de to.</p></div>
+
+    <div class="tbl-wrap"><table>
+    <tr><th>$\dim(\operatorname{Ker}T)$</th><th>$\dim(\operatorname{Ran}T)$</th><th>Injektiv?</th><th>Surjektiv?</th></tr>
+    <tr><td>$0$</td><td>$\dim V$</td><td><span class="tag tag-yes">Ja</span></td><td>Avhenger av $\dim W$</td></tr>
+    <tr><td>$\gt 0$</td><td>$\lt \dim V$</td><td><span class="tag tag-no">Nei</span></td><td>Avhenger av $\dim W$</td></tr>
+    <tr><td>$0$</td><td>$\dim V = \dim W$</td><td><span class="tag tag-yes">Ja</span></td><td><span class="tag tag-yes">Ja</span></td></tr>
+    </table></div>
+
+    <hr class="sep">
+    <h2>4. Underrom — Sjekkliste</h2>
+    <p>For å vise at $U \subseteq V$ er et underrom — tre ting:</p>
+    <div class="box thm"><div class="bl">Underromskriteriene</div>
+    <ol>
+    <li>$\mathbf{0} \in U$ (nullvektoren er med)</li>
+    <li>$u, v \in U \Rightarrow u + v \in U$ (lukket under addisjon)</li>
+    <li>$u \in U, r \in \mathbb{R} \Rightarrow ru \in U$ (lukket under skalering)</li>
+    </ol>
+    <p>$\operatorname{Ker}T$ og $\operatorname{Ran}T$ er alltid underrom — man trenger ikke bevise dette eksplisitt.</p></div>
+
+    <hr class="sep">
+    <h2>5. Matriserepresentasjon</h2>
+    <div class="box def"><div class="bl">Matrise av $T$ relativt til baser</div>
+    <p>For $T:V\to W$ med baser $B_V=\{v_1,\ldots,v_n\}$ og $B_W=\{w_1,\ldots,w_m\}$:</p>
+    $$[T]_{B_W\leftarrow B_V} = \bigl[[T(v_1)]_{B_W} \;\big|\; [T(v_2)]_{B_W} \;\big|\; \cdots \;\big|\; [T(v_n)]_{B_W}\bigr]$$
+    <p>Da gjelder: $[T(v)]_{B_W} = [T]_{B_W\leftarrow B_V} \cdot [v]_{B_V}$</p></div>
+
+    <div class="box tip"><div class="bl">For standardbasen i $\mathbb{R}^n$</div>
+    <p>$[T]_{\text{std}} = \bigl[T(e_1) \mid T(e_2) \mid \cdots \mid T(e_n)\bigr]$ — bare regn ut bildene av standardbasisvektorene og sett dem som kolonner.</p></div>
+
+    <hr class="sep">
+    <h2>6. Isomorfi og Rangteoremet</h2>
+    <div class="box def"><div class="bl">Isomorfi</div>
+    <p>$T:V\to W$ er en <strong>isomorfi</strong> dersom $T$ er bijektiv (injektiv og surjektiv). Da er $V \cong W$, og spesielt $\dim V = \dim W$.</p>
+    <p>Koordinatavbildningen $K:V\to\mathbb{R}^n$ er alltid en isomorfi — ethvert $n$-dimensjonalt vektorrom er isomorft med $\mathbb{R}^n$.</p></div>
+
+    <div class="box thm"><div class="bl">Rangteoremet for matriser</div>
+    $$\operatorname{rank}A + \dim(\operatorname{Nul}A) = n \quad\text{(antall kolonner)}$$
+    <p>Sammenheng: for $T_A(x)=Ax$ er $\operatorname{Ker}T_A = \operatorname{Nul}A$ og $\operatorname{Ran}T_A = \operatorname{Col}A$.</p></div>
+
+  </div>
+
+  <!-- ══════════ BEVISMAL ══════════ -->
+  <div class="section" id="tab-bevis">
+
+    <p style="color:var(--text2);margin-bottom:24px">
+      Eksakt oppskrift for de vanligste eksamensoppgavene. Lær deg strukturen — så varierer du innholdet.
+    </p>
+
+    <!-- BEVIS 1 -->
+    <div class="proof-block">
+      <h3>Oppgave: «Vis at $T$ er en lineærtransformasjon»</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>La to vilkårlige elementer og en skalar være gitt.</strong><br>
+          Skriv: «La $u, v \in V$ og $r \in \mathbb{R}$ være vilkårlige.»
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Vis additivitet: $T(u+v) = T(u)+T(v)$</strong><br>
+          Beregn $T(u+v)$ direkte fra definisjonen av $T$, og vis at du får $T(u)+T(v)$.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Vis homogenitet: $T(ru) = rT(u)$</strong><br>
+          Beregn $T(ru)$ fra definisjonen, vis at du får $rT(u)$.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <strong>Konklusjon.</strong><br>
+          Skriv: «Siden begge vilkårene er oppfylt, er $T$ en lineærtransformasjon.»
+        </div>
+      </div>
+
+      <div class="box ex" style="margin-top:18px"><div class="bl">Utarbeidet eksempel — $T:\mathcal{M}_2\to\mathcal{M}_2$</div>
+      <p>$T\!\left(\begin{bmatrix}a&amp;b\\c&amp;d\end{bmatrix}\right)=\begin{bmatrix}a&amp;0\\0&amp;d\end{bmatrix}$. La $A=\begin{bmatrix}a&amp;b\\c&amp;d\end{bmatrix}$, $B=\begin{bmatrix}e&amp;f\\g&amp;h\end{bmatrix}$, $r\in\mathbb{R}$.</p>
+      <p><strong>Additivitet:</strong></p>
+      $$T(A+B)=T\!\left(\begin{bmatrix}a+e&amp;b+f\\c+g&amp;d+h\end{bmatrix}\right)=\begin{bmatrix}a+e&amp;0\\0&amp;d+h\end{bmatrix}=\begin{bmatrix}a&amp;0\\0&amp;d\end{bmatrix}+\begin{bmatrix}e&amp;0\\0&amp;h\end{bmatrix}=T(A)+T(B)\;\checkmark$$
+      <p><strong>Homogenitet:</strong></p>
+      $$T(rA)=T\!\left(\begin{bmatrix}ra&amp;rb\\rc&amp;rd\end{bmatrix}\right)=\begin{bmatrix}ra&amp;0\\0&amp;rd\end{bmatrix}=r\begin{bmatrix}a&amp;0\\0&amp;d\end{bmatrix}=rT(A)\;\checkmark$$
+      <p>$\Rightarrow$ $T$ er en lineærtransformasjon.</p></div>
+    </div>
+
+    <!-- BEVIS 2 -->
+    <div class="proof-block">
+      <h3>Oppgave: «Bestem $\operatorname{Ker}T$»</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Sett $T(v) = \mathbf{0}$ og løs.</strong><br>
+          Skriv opp ligningen $T(v) = \mathbf{0}_W$ komponentvis.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Finn alle betingelsene på $v$.</strong><br>
+          Identifiser hvilke komponenter som er tvunget til null, og hvilke som er frie.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Uttrykk $\operatorname{Ker}T$ som et spenn.</strong><br>
+          Skriv resultatet som $\operatorname{Ker}T = \operatorname{Span}\{v_1, v_2, \ldots\}$ og oppgi $\dim(\operatorname{Ker}T)$.
+        </div>
+      </div>
+
+      <div class="box ex" style="margin-top:18px"><div class="bl">Fortsettelse — $T:\mathcal{M}_2\to\mathcal{M}_2$</div>
+      <p>$T(A)=\mathbf{0} \Rightarrow \begin{bmatrix}a&amp;0\\0&amp;d\end{bmatrix}=\begin{bmatrix}0&amp;0\\0&amp;0\end{bmatrix} \Rightarrow a=0,\;d=0$.</p>
+      <p>$b$ og $c$ er frie. Altså:</p>
+      $$\operatorname{Ker}T = \left\{\begin{bmatrix}0&amp;b\\c&amp;0\end{bmatrix}\;\bigg|\; b,c\in\mathbb{R}\right\} = \operatorname{Span}\!\left\{\begin{bmatrix}0&amp;1\\0&amp;0\end{bmatrix},\begin{bmatrix}0&amp;0\\1&amp;0\end{bmatrix}\right\}$$
+      <p>$\dim(\operatorname{Ker}T) = 2$.</p></div>
+    </div>
+
+    <!-- BEVIS 3 -->
+    <div class="proof-block">
+      <h3>Oppgave: «Avgjør om $T$ er injektiv og/eller surjektiv»</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Injektivitet: Sjekk $\operatorname{Ker}T$.</strong><br>
+          Hvis $\operatorname{Ker}T = \{\mathbf{0}\}$: injektiv. Ellers: ikke injektiv.<br>
+          Skriv eksplisitt: «Siden $\operatorname{Ker}T \neq \{\mathbf{0}\}$ er $T$ ikke injektiv.»
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Surjektivitet: Bruk rangteoremet.</strong><br>
+          $\dim(\operatorname{Ran}T) = \dim V - \dim(\operatorname{Ker}T)$.<br>
+          Sammenlign med $\dim W$: surjektiv $\iff$ $\dim(\operatorname{Ran}T) = \dim W$.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Begrunn med en konkret begrunnelse.</strong><br>
+          For ikke-injektiv: vis et element i $\operatorname{Ker}T$ som ikke er $\mathbf{0}$.<br>
+          For ikke-surjektiv: vis et element i $W$ som ikke er i $\operatorname{Ran}T$.
+        </div>
+      </div>
+
+      <div class="box ex" style="margin-top:18px"><div class="bl">Fortsettelse — $T:\mathcal{M}_2\to\mathcal{M}_2$</div>
+      <p><strong>Injektivitet:</strong> $\operatorname{Ker}T = \operatorname{Span}\!\left\{\begin{bmatrix}0&amp;1\\0&amp;0\end{bmatrix},\begin{bmatrix}0&amp;0\\1&amp;0\end{bmatrix}\right\} \neq \{\mathbf{0}\}$</p>
+      <p>$\Rightarrow$ <span class="cross">$T$ er ikke injektiv.</span> (Konkret: $T\!\left(\begin{bmatrix}0&amp;1\\0&amp;0\end{bmatrix}\right)=\mathbf{0}$ men $\begin{bmatrix}0&amp;1\\0&amp;0\end{bmatrix}\neq\mathbf{0}$.)</p>
+      <p><strong>Surjektivitet:</strong> $\dim(\mathcal{M}_2) = 4$, $\dim(\operatorname{Ker}T) = 2$, så $\dim(\operatorname{Ran}T) = 4-2 = 2 \lt 4 = \dim W$.</p>
+      <p>$\Rightarrow$ <span class="cross">$T$ er ikke surjektiv.</span> (Konkret: $\begin{bmatrix}0&amp;1\\0&amp;0\end{bmatrix}\in\mathcal{M}_2$ er ikke i $\operatorname{Ran}T$, siden alle bilder har $b$-posisjon $=0$.)</p></div>
+    </div>
+
+    <!-- BEVIS 4 -->
+    <div class="proof-block">
+      <h3>Oppgave: «Vis at en mengde er et underrom»</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Nullvektoren:</strong> Vis at $\mathbf{0} \in U$.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>Lukket under addisjon:</strong> Ta $u, v \in U$ og vis $u+v \in U$.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Lukket under skalarmultiplikasjon:</strong> Ta $u \in U$, $r \in \mathbb{R}$ og vis $ru \in U$.</div>
+      </div>
+      <div class="box warn" style="margin-top:14px"><div class="bl">Obs</div>
+      <p>$\operatorname{Ker}T$ og $\operatorname{Ran}T$ er <em>alltid</em> underrom for lineær $T$ — du trenger ikke bevise dette hvis oppgaven bare ber deg bestemme dem. Men hvis oppgaven eksplisitt sier «vis at det er et underrom», bruk de tre punktene over.</p></div>
+    </div>
+
+    <!-- BEVIS 5 -->
+    <div class="proof-block">
+      <h3>Oppgave: «Finn matriserepresentasjonen $[T]_{B_W \leftarrow B_V}$»</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body"><strong>Beregn $T(v_i)$ for hver basisvektor $v_i \in B_V$.</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body"><strong>Uttrykk hvert $T(v_i)$ i $B_W$-koordinater:</strong> finn $[T(v_i)]_{B_W}$.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body"><strong>Sett koordinatvektorene som kolonner:</strong>
+        $[T]_{B_W\leftarrow B_V} = \bigl[[T(v_1)]_{B_W} \mid \cdots \mid [T(v_n)]_{B_W}\bigr]$.</div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:32px">Vanlige feil å unngå</h2>
+    <div class="box warn"><div class="bl">Pass på</div>
+    <ul>
+    <li>Å <em>bare</em> vise additivitet eller homogenitet — du trenger <strong>begge</strong></li>
+    <li>Å glemme å sjekke $T(\mathbf{0}) = \mathbf{0}$ som en rask sanitysjekk</li>
+    <li>Å si «$\operatorname{Ker}T = \{0\}$» uten å finne hva nullvektoren faktisk er i rommet</li>
+    <li>Å konkludere injektiv/surjektiv uten å beregne $\dim(\operatorname{Ran}T)$ eksplisitt</li>
+    <li>Å glemme å begrunne — «Ker T ≠ {0}, altså ikke injektiv» krever en konkret vektor som bevis</li>
+    </ul></div>
+
+  </div>
+
+  <!-- ══════════ FLASHKORT ══════════ -->
+  <div class="section" id="tab-flash">
+
+    <div class="fc-controls">
+      <span class="fc-progress" id="fc-prog">Kort 1 av 12</span>
+      <button class="fc-btn primary" onclick="fcShuffle()">Bland</button>
+      <button class="fc-btn" onclick="fcReset()">Start på nytt</button>
+    </div>
+
+    <div id="score-view" style="display:none">
+      <div class="score-panel">
+        <h2>Ferdig!</h2>
+        <div class="score-num" id="score-num">0/12</div>
+        <p class="score-sub" id="score-sub">av kortene kunne du</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+          <button class="fc-btn primary" onclick="fcReset()">Ta runden igjen</button>
+          <button class="fc-btn" onclick="fcReviewOnly()">Øv på de vanskelige</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="card-view">
+      <p class="flip-hint">Klikk på kortet for å snu det</p>
+      <div class="card-area">
+        <div class="card" id="fc-card" onclick="fcFlip()">
+          <div class="card-face card-front">
+            <span class="cat-badge" id="fc-cat"></span>
+            <div class="card-label">Begrep / Oppgave</div>
+            <div class="card-title" id="fc-title"></div>
+            <div class="card-hint" id="fc-hint"></div>
+          </div>
+          <div class="card-face card-back">
+            <span class="cat-badge" id="fc-cat-back"></span>
+            <div class="card-label">Svar</div>
+            <div class="card-body" id="fc-body"></div>
+          </div>
+        </div>
+      </div>
+      <div id="result-row" class="result-row" style="display:none;max-width:640px;margin:0 auto">
+        <button class="res-btn res-knew" onclick="fcMark(true)">Kunne dette ✓</button>
+        <button class="res-btn res-review" onclick="fcMark(false)">Øv mer ↻</button>
+      </div>
+      <div class="dots" id="fc-dots"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(id, e) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  e.target.classList.add('active');
+}
+
+const ALL_CARDS = [
+  {
+    title: 'Definisjon: Lineærtransformasjon',
+    hint: 'To aksiomer — hvilke?',
+    cat: 'Definisjon', catClass: 'cat-def',
+    body: `<p>$T:V\\to W$ er lineær hvis for alle $u,v\\in V$, $r\\in\\mathbb{R}$:</p>
+<ol><li><strong>Additivitet:</strong> $T(u+v)=T(u)+T(v)$</li>
+<li><strong>Homogenitet:</strong> $T(ru)=rT(u)$</li></ol>
+<p>Konsekvens: $T(\\mathbf{0})=\\mathbf{0}$ alltid.</p>`
+  },
+  {
+    title: 'Rask test for ikke-linearitet',
+    hint: 'Hva sjekker du aller først?',
+    cat: 'Bevis', catClass: 'cat-proof',
+    body: `<p>Sjekk $T(\\mathbf{0})$:</p>
+<p>Hvis $T(\\mathbf{0}) \\neq \\mathbf{0}_W$ er $T$ <strong>ikke lineær</strong> — stopp der.</p>
+<p>Eks: $T(x)=x+1$ — ikke lineær fordi $T(0)=1\\neq 0$.</p>`
+  },
+  {
+    title: 'Kjerne: $\\operatorname{Ker}T$',
+    hint: 'Definisjon og hva slags mengde er det?',
+    cat: 'Definisjon', catClass: 'cat-def',
+    body: `$$\\operatorname{Ker}T = \\{v\\in V \\mid T(v)=\\mathbf{0}\\}$$
+<p>Er alltid et <strong>underrom</strong> av $V$.</p>
+<p><strong>Finne:</strong> Løs $T(v)=\\mathbf{0}$, uttrykk svaret som $\\operatorname{Span}\\{\\ldots\\}$.</p>`
+  },
+  {
+    title: 'Bilde: $\\operatorname{Ran}T$',
+    hint: 'Definisjon og hva slags mengde er det?',
+    cat: 'Definisjon', catClass: 'cat-def',
+    body: `$$\\operatorname{Ran}T = T(V) = \\{T(v)\\mid v\\in V\\}$$
+<p>Er alltid et <strong>underrom</strong> av $W$.</p>
+<p><strong>Finne:</strong> Beregn $T(v_i)$ for alle basisvektorer $v_i$. Span av bildene er $\\operatorname{Ran}T$.</p>`
+  },
+  {
+    title: 'Rangteoremet',
+    hint: 'Formel og hva betyr de to dimensjonene?',
+    cat: 'Teorem', catClass: 'cat-thm',
+    body: `$$\\dim(\\operatorname{Ran}T) + \\dim(\\operatorname{Ker}T) = \\dim V$$
+<p>«Dimensjon av bilde + dimensjon av kjerne = dimensjon av domenet»</p>
+<p>Brukes til å finne $\\dim(\\operatorname{Ran}T)$ uten å beregne det direkte.</p>`
+  },
+  {
+    title: 'Injektivitet',
+    hint: 'Betingelse, karakterisering og hva viser du?',
+    cat: 'Teorem', catClass: 'cat-thm',
+    body: `<p>$T$ er injektiv (en-til-en) $\\iff$ $\\operatorname{Ker}T = \\{\\mathbf{0}\\}$</p>
+<p><strong>Vis injektiv:</strong> Løs $T(v)=\\mathbf{0}$ og vis at $v=\\mathbf{0}$ er eneste løsning.</p>
+<p><strong>Vis ikke injektiv:</strong> Finn et $v\\neq\\mathbf{0}$ med $T(v)=\\mathbf{0}$.</p>`
+  },
+  {
+    title: 'Surjektivitet',
+    hint: 'Betingelse og dimensjonsargumentet',
+    cat: 'Teorem', catClass: 'cat-thm',
+    body: `<p>$T$ er surjektiv (på) $\\iff$ $\\operatorname{Ran}T = W$ $\\iff$ $\\dim(\\operatorname{Ran}T) = \\dim W$</p>
+<p><strong>Via rangteoremet:</strong> $\\dim(\\operatorname{Ran}T)=\\dim V - \\dim(\\operatorname{Ker}T)$. Sammenlign med $\\dim W$.</p>
+<p><strong>Vis ikke surjektiv:</strong> Finn et element i $W$ som ikke er i $\\operatorname{Ran}T$.</p>`
+  },
+  {
+    title: 'Dim V = Dim W — spesialtilfellet',
+    hint: 'Hva følger automatisk?',
+    cat: 'Teorem', catClass: 'cat-thm',
+    body: `<p>Hvis $\\dim V = \\dim W$ og $T:V\\to W$ er lineær:</p>
+<p>Injektiv $\\iff$ surjektiv $\\iff$ bijektiv (isomorfi)</p>
+<p><strong>Praktisk:</strong> Vis bare at $\\operatorname{Ker}T=\\{\\mathbf{0}\\}$ — surjektivitet følger gratis!</p>`
+  },
+  {
+    title: 'Isomorfi',
+    hint: 'Hva er det og hva følger?',
+    cat: 'Definisjon', catClass: 'cat-def',
+    body: `<p>$T$ er en <strong>isomorfi</strong> hvis $T$ er bijektiv (injektiv + surjektiv). Da: $V\\cong W$.</p>
+<ul><li>$\\dim V = \\dim W$ (nødvendig)</li>
+<li>Koordinatavbildningen $K:V\\to\\mathbb{R}^n$ er alltid en isomorfi</li>
+<li>Alle $n$-dim. vektorrom er isomorfe med $\\mathbb{R}^n$</li></ul>`
+  },
+  {
+    title: 'Underromskriteriene',
+    hint: 'Tre ting du må vise',
+    cat: 'Bevis', catClass: 'cat-proof',
+    body: `<p>$U\\subseteq V$ er underrom $\\iff$:</p>
+<ol><li>$\\mathbf{0}\\in U$</li>
+<li>$u,v\\in U \\Rightarrow u+v\\in U$</li>
+<li>$u\\in U,\\; r\\in\\mathbb{R} \\Rightarrow ru\\in U$</li></ol>
+<p>Tips: 2+3 kan kombineres til $ru+sv\\in U$ for alle $r,s$.</p>`
+  },
+  {
+    title: 'Matriserepresentasjon $[T]_{B_W\\leftarrow B_V}$',
+    hint: 'Hvordan bygger du den?',
+    cat: 'Bevis', catClass: 'cat-proof',
+    body: `<ol><li>Beregn $T(v_i)$ for alle $v_i\\in B_V$</li>
+<li>Uttrykk $T(v_i)$ i $B_W$-koordinater: $[T(v_i)]_{B_W}$</li>
+<li>Sett som kolonner: $[T]=[\\,[T(v_1)]_{B_W}\\,|\\,\\cdots\\,|\\,[T(v_n)]_{B_W}\\,]$</li></ol>
+<p>For standardbasis: kolonne $i$ = $T(e_i)$.</p>`
+  },
+  {
+    title: 'Fullstendig eksempel: $T(A)$ på $\\mathcal{M}_2$',
+    hint: 'Injektiv? Surjektiv? (samme som bildet i oppgaven)',
+    cat: 'Eksempel', catClass: 'cat-ex',
+    body: `<p>$T\\!\\left(\\begin{bmatrix}a&b\\\\c&d\\end{bmatrix}\\right)=\\begin{bmatrix}a&0\\\\0&d\\end{bmatrix}$, $\\dim(\\mathcal{M}_2)=4$</p>
+<p>$\\operatorname{Ker}T=\\operatorname{Span}\\!\\left\\{\\begin{bmatrix}0&1\\\\0&0\\end{bmatrix},\\begin{bmatrix}0&0\\\\1&0\\end{bmatrix}\\right\\}$, dim $=2$</p>
+<p>$\\dim(\\operatorname{Ran}T)=4-2=2\\lt 4=\\dim W$</p>
+<p>Ikke injektiv, ikke surjektiv.</p>`
+  }
+];
+
+let deck = [], idx = 0, flipped = false, knew = [], review = [];
+
+function fcInit(cards) {
+  deck = cards.slice();
+  idx = 0; flipped = false; knew = []; review = [];
+  document.getElementById('score-view').style.display = 'none';
+  document.getElementById('card-view').style.display = 'block';
+  renderCard(); renderDots();
+}
+function fcReset() { fcInit(ALL_CARDS); }
+function fcShuffle() {
+  const arr = ALL_CARDS.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  fcInit(arr);
+}
+function fcReviewOnly() {
+  if (review.length === 0) { fcReset(); return; }
+  fcInit(review);
+}
+function renderCard() {
+  const c = deck[idx];
+  document.getElementById('fc-card').classList.remove('flipped');
+  document.getElementById('result-row').style.display = 'none';
+  flipped = false;
+  document.getElementById('fc-title').innerHTML = c.title;
+  document.getElementById('fc-hint').innerHTML = c.hint;
+  document.getElementById('fc-cat').className = 'cat-badge ' + c.catClass;
+  document.getElementById('fc-cat').textContent = c.cat;
+  document.getElementById('fc-cat-back').className = 'cat-badge ' + c.catClass;
+  document.getElementById('fc-cat-back').textContent = c.cat;
+  document.getElementById('fc-body').innerHTML = c.body;
+  document.getElementById('fc-prog').textContent = `Kort ${idx + 1} av ${deck.length}`;
+  if (window.renderMathInElement) {
+    renderMathInElement(document.getElementById('fc-card'), {
+      delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError: false
+    });
+  }
+  renderDots();
+}
+function fcFlip() {
+  if (!flipped) {
+    document.getElementById('fc-card').classList.add('flipped');
+    document.getElementById('result-row').style.display = 'flex';
+    flipped = true;
+  }
+}
+function fcMark(didKnow) {
+  if (didKnow) knew.push(deck[idx]);
+  else review.push(deck[idx]);
+  idx++;
+  if (idx >= deck.length) showScore();
+  else renderCard();
+}
+function showScore() {
+  document.getElementById('card-view').style.display = 'none';
+  document.getElementById('score-view').style.display = 'block';
+  const n = knew.length, t = deck.length;
+  document.getElementById('score-num').textContent = `${n}/${t}`;
+  document.getElementById('score-sub').textContent = n === t
+    ? 'av kortene — perfekt!'
+    : `av kortene. ${review.length} kort til øving.`;
+}
+function renderDots() {
+  const c = document.getElementById('fc-dots');
+  c.innerHTML = '';
+  deck.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < idx ? ' seen' : '') + (i === idx ? ' current' : '');
+    d.onclick = () => { idx = i; flipped = false; renderCard(); };
+    c.appendChild(d);
+  });
+}
+
+fcInit(ALL_CARDS);
+</script>
+</body>
+</html>
