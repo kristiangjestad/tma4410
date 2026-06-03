@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TMA4410 — Rekker: Potensrekker, Taylor og Fourier</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+<style>
+:root {
+  --bg: #f9f8f6;
+  --surface: #ffffff;
+  --surface2: #f3f2ef;
+  --border: #e4e2dc;
+  --border2: #ccc9c0;
+  --text: #1a1a18;
+  --text2: #5c5b56;
+  --text3: #9b9a94;
+  --accent: #2d5be3;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg); color: var(--text);
+  font-size: 15px; line-height: 1.6;
+}
+.page { max-width: 860px; margin: 0 auto; padding: 44px 28px 100px; }
+
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--text3); text-decoration: none;
+  margin-bottom: 24px; transition: color .15s;
+}
+.back-link:hover { color: var(--accent); }
+header { margin-bottom: 36px; }
+header h1 { font-size: 26px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 4px; }
+header p { color: var(--text2); font-size: 14px; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 6px; margin-bottom: 32px; flex-wrap: wrap; }
+.tab {
+  padding: 7px 16px; border-radius: 20px; border: 1px solid var(--border2);
+  background: var(--surface); font-size: 13px; font-weight: 600;
+  color: var(--text2); cursor: pointer; transition: all .15s;
+}
+.tab:hover { border-color: var(--accent); color: var(--accent); }
+.tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.section { display: none; }
+.section.active { display: block; }
+
+/* ── Boxes ── */
+.box { border-left: 3px solid; padding: 11px 15px; margin: 14px 0; border-radius: 0 var(--radius) var(--radius) 0; }
+.bl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
+.def  { border-color: #2d5be3; background: #f0f4ff; } .def  .bl { color: #1e40af; }
+.thm  { border-color: #0d7a5c; background: #f0fdf8; } .thm  .bl { color: #065f46; }
+.ex   { border-color: #b45309; background: #fffcf0; } .ex   .bl { color: #92400e; }
+.warn { border-color: #dc2626; background: #fff5f5; } .warn .bl { color: #991b1b; }
+.tip  { border-color: #7c3aed; background: #f5f3ff; } .tip  .bl { color: #5b21b6; }
+
+h2 { font-size: 16px; font-weight: 700; color: var(--text); margin: 32px 0 10px; letter-spacing: -.15px; }
+h3 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text3); margin: 18px 0 7px; }
+p { line-height: 1.7; margin-bottom: 9px; }
+ul, ol { margin: 7px 0 10px 20px; line-height: 1.7; }
+li { margin-bottom: 3px; }
+.katex-display { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 2px 0; }
+hr.sep { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+/* ── Tables ── */
+.tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 14px 0; }
+table { border-collapse: collapse; font-size: 13.5px; width: 100%; min-width: 440px; }
+th, td { border: 1px solid var(--border2); padding: 7px 11px; }
+th { background: var(--surface2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; text-align: left; }
+td:first-child { font-weight: 600; }
+.tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: .05em; }
+.tag-p  { background: #e0e7ff; color: #3730a3; }
+.tag-t  { background: #dcfce7; color: #166534; }
+.tag-f  { background: #fef9c3; color: #854d0e; }
+.tag-g  { background: #f3e8ff; color: #6b21a8; }
+
+/* ── Flashcards ── */
+.fc-controls { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+.fc-progress { font-size: 13px; color: var(--text2); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; }
+.fc-btn { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border2); background: var(--surface); font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: all .15s; }
+.fc-btn:hover { background: var(--surface2); }
+.fc-btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+.fc-btn.primary:hover { background: #2450c8; }
+
+.card-area { perspective: 1000px; margin: 0 auto 28px; max-width: 640px; }
+.card { position: relative; width: 100%; min-height: 280px; transform-style: preserve-3d; transition: transform .45s ease; cursor: pointer; }
+.card.flipped { transform: rotateY(180deg); }
+.card-face {
+  position: absolute; width: 100%; min-height: 280px;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: var(--radius); border: 1px solid var(--border);
+  box-shadow: var(--shadow); display: flex; flex-direction: column;
+  justify-content: center; padding: 28px 30px;
+}
+.card-front { background: var(--surface); }
+.card-back  { background: #f0fdf8; transform: rotateY(180deg); border-color: #a7f3d0; }
+.card-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); margin-bottom: 12px; }
+.card-front .card-label { color: #1e40af; }
+.card-back  .card-label { color: #065f46; }
+.card-title { font-size: 21px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 8px; }
+.card-hint  { font-size: 13px; color: var(--text2); }
+.card-body  { font-size: 14px; line-height: 1.75; }
+.card-body p { margin-bottom: 6px; }
+.card-body ul { margin-left: 18px; }
+.flip-hint { text-align: center; font-size: 12px; color: var(--text3); margin-bottom: 22px; }
+.fc-nav { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.cat-badge { position: absolute; top: 16px; right: 16px; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: .06em; }
+.cat-power  { background: #e0e7ff; color: #3730a3; }
+.cat-taylor { background: #dcfce7; color: #166534; }
+.cat-fourier { background: #fef9c3; color: #854d0e; }
+.cat-general { background: #f3e8ff; color: #6b21a8; }
+
+.dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin: 20px 0 0; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border2); transition: background .2s; cursor: pointer; }
+.dot.seen    { background: var(--text3); }
+.dot.current { background: var(--accent); transform: scale(1.3); }
+
+.result-row { display: flex; gap: 8px; justify-content: center; margin-top: 18px; }
+.res-btn { flex: 1; max-width: 160px; padding: 9px 0; border-radius: 8px; border: 2px solid; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s; }
+.res-knew   { border-color: #0d7a5c; color: #065f46; background: #f0fdf8; }
+.res-knew:hover   { background: #dcfce7; }
+.res-review { border-color: #b45309; color: #92400e; background: #fffcf0; }
+.res-review:hover { background: #fef3c7; }
+
+.score-panel { text-align: center; padding: 40px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); max-width: 640px; margin: 0 auto; }
+.score-panel h2 { font-size: 22px; margin-bottom: 12px; }
+.score-num { font-size: 52px; font-weight: 800; color: var(--accent); line-height: 1; }
+.score-sub { font-size: 14px; color: var(--text2); margin: 8px 0 24px; }
+
+@media (max-width: 600px) {
+  .page { padding: 24px 14px 80px; }
+  header h1 { font-size: 20px; }
+  .card-title { font-size: 18px; }
+  .card-face { padding: 20px 18px; min-height: 240px; }
+  .card-body { font-size: 13px; }
+  h2 { font-size: 15px; margin: 24px 0 8px; }
+}
+@media (max-width: 400px) {
+  body { font-size: 14px; }
+  .card-title { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back-link" href="index.html">← Tilbake til forelesningsnotater</a>
+
+  <header>
+    <h1>Potensrekker, Taylor og Fourier</h1>
+    <p>Komplett oversikt over rekker og rekketilnærming i TMA4410</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('ref', event)">Oversikt</button>
+    <button class="tab" onclick="switchTab('oppsummering', event)">Oppsummering</button>
+    <button class="tab" onclick="switchTab('flash', event)">Flashkort</button>
+  </div>
+
+  <!-- ══════════ OVERSIKT ══════════ -->
+  <div class="section active" id="tab-ref">
+
+    <h2>1. Potensrekker</h2>
+    <div class="box def"><div class="bl">Definisjon</div>
+    <p>En potensrekke rundt $a$ er:</p>
+    $$\sum_{n=0}^\infty b_n(x-a)^n = b_0 + b_1(x-a) + b_2(x-a)^2 + \cdots$$
+    <p>Den konvergerer absolutt for $|x-a| \lt R$ og divergerer for $|x-a| \gt R$, der $R$ er <strong>konvergensradius</strong>.</p></div>
+
+    <div class="box thm"><div class="bl">Finne konvergensradius</div>
+    $$R = \lim_{n\to\infty}\left|\frac{b_n}{b_{n+1}}\right| \quad\text{(forholdstesten)}$$
+    <p>Alternativt: $R = 1/\lim_{n\to\infty}\sqrt[n]{|b_n|}$ (rotstesten). Sjekk alltid endepunktene $x = a \pm R$ separat!</p></div>
+
+    <div class="box thm"><div class="bl">Leddvis derivasjon og integrasjon</div>
+    <p>For $f(x) = \sum_{n=0}^\infty b_n x^n$ med $R \gt 0$:</p>
+    $$f'(x) = \sum_{n=1}^\infty n b_n x^{n-1}, \qquad \int_0^x f(t)\,dt = \sum_{n=0}^\infty \frac{b_n}{n+1}x^{n+1}$$
+    <p>Konvergensradius bevares ved derivasjon; integrasjon kan utvide intervallet til endepunktene.</p></div>
+
+    <div class="box ex"><div class="bl">Eksempel — $\arctan x$</div>
+    <p>Start med $\dfrac{1}{1+x^2} = \sum_{n=0}^\infty (-1)^n x^{2n}$ (geometrisk, $|x|\lt 1$). Integrer ledd for ledd:</p>
+    $$\arctan x = \sum_{n=0}^\infty \frac{(-1)^n}{2n+1}x^{2n+1} = x - \frac{x^3}{3} + \frac{x^5}{5} - \cdots, \quad x \in [-1,1]$$
+    <p>$x=1$: $\quad 1 - \tfrac{1}{3} + \tfrac{1}{5} - \cdots = \dfrac{\pi}{4}$</p></div>
+
+    <hr class="sep">
+    <h2>2. Taylor- og Maclaurin-rekker</h2>
+    <div class="box def"><div class="bl">Taylorrekke rundt $a$</div>
+    $$f(x) = \sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!}(x-a)^n = f(a) + f'(a)(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \cdots$$
+    <p>Maclaurinrekken er spesialtilfellet $a=0$.</p></div>
+
+    <div class="box thm"><div class="bl">Standard Maclaurinrekker — må kunne utenat</div>
+    <div class="tbl-wrap"><table>
+    <tr><th>Funksjon</th><th>Maclaurinrekke</th><th>$R$</th></tr>
+    <tr><td>$e^x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{x^n}{n!}$</td><td>$\infty$</td></tr>
+    <tr><td>$\sin x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{(-1)^n x^{2n+1}}{(2n+1)!}$</td><td>$\infty$</td></tr>
+    <tr><td>$\cos x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{(-1)^n x^{2n}}{(2n)!}$</td><td>$\infty$</td></tr>
+    <tr><td>$\ln(1+x)$</td><td>$\displaystyle\sum_{n=1}^\infty\frac{(-1)^{n+1}x^n}{n}$</td><td>$1$</td></tr>
+    <tr><td>$\dfrac{1}{1-x}$</td><td>$\displaystyle\sum_{n=0}^\infty x^n$</td><td>$1$</td></tr>
+    <tr><td>$\arctan x$</td><td>$\displaystyle\sum_{n=0}^\infty\frac{(-1)^n x^{2n+1}}{2n+1}$</td><td>$1$</td></tr>
+    </table></div></div>
+
+    <div class="box thm"><div class="bl">Binomialrekken</div>
+    $$(1+x)^\alpha = \sum_{n=0}^\infty \binom{\alpha}{n}x^n, \quad |x|\lt 1$$
+    $$\binom{\alpha}{n} = \frac{\alpha(\alpha-1)\cdots(\alpha-n+1)}{n!}$$
+    <p>For heltallig $\alpha \geq 0$ avbrytes rekken og gir det vanlige binomialteoremet.</p></div>
+
+    <div class="box thm"><div class="bl">Restleddet (Lagrange)</div>
+    $$f(x) = T_N(x) + R_N(x), \qquad |R_N(x)| \leq \frac{M_{N+1}}{(N+1)!}|x-a|^{N+1}$$
+    <p>$M_{N+1} = \max_{t\text{ mellom }a\text{ og }x}|f^{(N+1)}(t)|$. Brukes for å estimere nøyaktigheten.</p></div>
+
+    <div class="box ex"><div class="bl">Eksempel — Restledd for $e^x$</div>
+    <p>Approksimer $e^{0.1}$ med $T_3$. Her $f^{(n)}(x)=e^x$, $a=0$, $M_4=e^{0.1}\lt 2$:</p>
+    $$|R_3(0.1)| \leq \frac{2}{4!}(0.1)^4 = \frac{2 \cdot 0.0001}{24} \approx 8.3\times10^{-6}$$</div>
+
+    <hr class="sep">
+    <h2>3. Fouriertilnærming</h2>
+    <p>Idé: finn den beste tilnærming til $f$ i rommet $V_N = \operatorname{Span}\{1, \cos x, \sin x, \ldots, \cos Nx, \sin Nx\}$ mht. $L^2$-normen.</p>
+
+    <div class="box def"><div class="bl">Fourierkoeffisienter og tilnærming</div>
+    $$a_n = \frac{1}{\pi}\int_{-\pi}^\pi f(x)\cos(nx)\,dx, \qquad b_n = \frac{1}{\pi}\int_{-\pi}^\pi f(x)\sin(nx)\,dx$$
+    $$f_N(x) = \frac{a_0}{2} + \sum_{n=1}^N \bigl(a_n\cos(nx) + b_n\sin(nx)\bigr)$$
+    <p>$f_N$ er den <em>beste $L^2$-tilnærming</em> — Bessels ulikhet: $\frac{a_0^2}{2}+\sum_{n=1}^N(a_n^2+b_n^2) \leq \frac{1}{\pi}\int_{-\pi}^\pi f^2\,dx$.</p></div>
+
+    <div class="box tip"><div class="bl">Like/Odde funksjoner</div>
+    <ul>
+    <li><strong>Like</strong> ($f(-x)=f(x)$): $b_n=0$ for alle $n$ — kun cosinusledd</li>
+    <li><strong>Odde</strong> ($f(-x)=-f(x)$): $a_n=0$ for alle $n$ — kun sinusledd</li>
+    </ul></div>
+
+    <div class="box ex"><div class="bl">Firkantfunksjon (odde)</div>
+    <p>$f(x)=\text{sgn}(x)$ på $(-\pi,\pi)$: $a_n=0$, $b_n = \dfrac{4}{n\pi}$ for odde $n$, ellers $0$:</p>
+    $$f_{2N+1}(x) = \frac{4}{\pi}\!\left(\sin x + \frac{\sin 3x}{3} + \frac{\sin 5x}{5} + \cdots\right)$$</div>
+
+    <hr class="sep">
+    <h2>4. Fourierrekken og Fouriers Teorem</h2>
+    <div class="box def"><div class="bl">Fourierrekken (uendelig)</div>
+    $$S_f(x) = \frac{a_0}{2} + \sum_{n=1}^\infty \bigl(a_n\cos(nx) + b_n\sin(nx)\bigr)$$</div>
+
+    <div class="box thm"><div class="bl">Fouriers teorem (Dirichlet)</div>
+    <p>La $f$ være stykkevis kontinuerlig på $[-\pi,\pi]$:</p>
+    <ul>
+    <li>$f$ kontinuerlig i $x_0$: $\quad S_f(x_0) = f(x_0)$</li>
+    <li>Sprang i $x_0$: $\quad S_f(x_0) = \dfrac{f(x_0^+)+f(x_0^-)}{2}$ (gjennomsnitt)</li>
+    <li>$x = \pm\pi$: $\quad S_f(\pm\pi) = \dfrac{f(-\pi^+)+f(\pi^-)}{2}$</li>
+    </ul>
+    <p>Utenfor $[-\pi,\pi]$: $S_f$ er den $2\pi$-periodiske utvidelsen av $f$.</p></div>
+
+    <div class="box ex"><div class="bl">Eksempel — $f(x)=x^2$ på $[-\pi,\pi]$</div>
+    <p>Like funksjon: $b_n=0$, $a_0=\frac{2\pi^2}{3}$, $a_n=\frac{4(-1)^n}{n^2}$:</p>
+    $$S_f(x) = \frac{\pi^2}{3} + 4\sum_{n=1}^\infty \frac{(-1)^n}{n^2}\cos(nx)$$
+    <p>Sett $x=0$: $\quad\displaystyle\sum_{n=1}^\infty\frac{(-1)^{n+1}}{n^2} = \frac{\pi^2}{12}$</p>
+    <p>Sett $x=\pi$: $\quad\displaystyle\sum_{n=1}^\infty\frac{1}{n^2} = \frac{\pi^2}{6}$ (Eulers resultat!)</p></div>
+
+    <hr class="sep">
+    <h2>5. Kompleks form og Amplitude-fase</h2>
+    <div class="box def"><div class="bl">Kompleks Fourierrekke</div>
+    $$S_f(x) = \sum_{n=-\infty}^\infty c_n e^{inx}, \qquad c_n = \frac{1}{2\pi}\int_{-\pi}^\pi f(x)e^{-inx}\,dx$$
+    <p>Sammenheng med reelle koeffisienter: $a_n = 2\operatorname{Re}(c_n)$, $b_n = -2\operatorname{Im}(c_n)$ for $n\gt 0$; $c_0 = a_0/2$.</p></div>
+
+    <div class="box def"><div class="bl">Amplitude-fase-form</div>
+    $$S_f(x) = \frac{a_0}{2} + \sum_{n=1}^\infty A_n\cos(nx - \theta_n)$$
+    $$A_n = \sqrt{a_n^2+b_n^2}, \qquad \theta_n = \arctan\!\left(\frac{b_n}{a_n}\right)$$</div>
+
+    <hr class="sep">
+    <h2>6. Halvrekker</h2>
+    <p>For en funksjon $f$ definert på $[0,\pi]$ kan man velge to $2\pi$-periodiske utvidelser:</p>
+    <div class="box thm"><div class="bl">Like og odde utvidelse</div>
+    <ul>
+    <li><strong>Like utvidelse</strong> → <strong>cosinusrekke</strong>: $\displaystyle a_n = \frac{2}{\pi}\int_0^\pi f(x)\cos(nx)\,dx$, alle $b_n=0$</li>
+    <li><strong>Odde utvidelse</strong> → <strong>sinusrekke</strong>: $\displaystyle b_n = \frac{2}{\pi}\int_0^\pi f(x)\sin(nx)\,dx$, alle $a_n=0$</li>
+    </ul></div>
+
+    <hr class="sep">
+    <h2>7. Konvergenstyper</h2>
+    <div class="box def"><div class="bl">Tre typer konvergens</div>
+    <ul>
+    <li><strong>Punktvis:</strong> $f_N(x_0) \to f(x_0)$ for hvert enkelt $x_0$</li>
+    <li><strong>Uniform:</strong> $\max_x|f_N(x)-f(x)| \to 0$ — alle punkter konvergerer med <em>samme</em> hastighet</li>
+    <li><strong>$L^2$ (minste kvadrater):</strong> $\int_{-\pi}^\pi|f-f_N|^2\,dx \to 0$</li>
+    </ul>
+    <p>Hierarki: uniform $\Rightarrow$ punktvis $\Rightarrow$ $L^2$. Det omvendte gjelder ikke generelt.</p></div>
+
+    <div class="box warn"><div class="bl">Gibbs-fenomenet</div>
+    <p>Ved <strong>sprang</strong> i $f$ overestimerer Fourierrekken med ca. <strong>9%</strong> av spranghøyden rett ved diskontinuiteten — uansett hvor mange ledd man tar med. Dette er Gibbs-fenomenet: rekken konvergerer <em>ikke</em> uniformt ved sprang.</p></div>
+
+    <div class="tbl-wrap"><table>
+    <tr><th>Type</th><th>Betingelse på $f$</th><th>Styrke</th></tr>
+    <tr><td>Uniform konvergens</td><td>Kontinuerlig, stykkevis glatt</td><td>Sterkest</td></tr>
+    <tr><td>Punktvis konvergens</td><td>Stykkevis kontinuerlig</td><td>Middels</td></tr>
+    <tr><td>$L^2$-konvergens</td><td>$f \in L^2[-\pi,\pi]$</td><td>Svakest</td></tr>
+    </table></div>
+
+  </div>
+
+  <!-- ══════════ OPPSUMMERING ══════════ -->
+  <div class="section" id="tab-oppsummering">
+
+    <h2>Rask Oversikt</h2>
+    <div class="tbl-wrap"><table>
+    <tr><th>Tema</th><th>Nøkkelformel</th><th>Type</th></tr>
+    <tr>
+      <td>Potensrekke</td>
+      <td>$\sum b_n(x-a)^n$, konv. for $|x-a|\lt R$</td>
+      <td><span class="tag tag-p">Potens</span></td>
+    </tr>
+    <tr>
+      <td>Konvergensradius</td>
+      <td>$R=\lim|b_n/b_{n+1}|$</td>
+      <td><span class="tag tag-p">Potens</span></td>
+    </tr>
+    <tr>
+      <td>Taylorrekke</td>
+      <td>$\sum f^{(n)}(a)/n!\cdot(x-a)^n$</td>
+      <td><span class="tag tag-t">Taylor</span></td>
+    </tr>
+    <tr>
+      <td>Restledd</td>
+      <td>$|R_N|\leq M_{N+1}/(N+1)!\cdot|x-a|^{N+1}$</td>
+      <td><span class="tag tag-t">Taylor</span></td>
+    </tr>
+    <tr>
+      <td>Fourierkoeff.</td>
+      <td>$a_n=\frac{1}{\pi}\int_{-\pi}^\pi f\cos(nx)dx$</td>
+      <td><span class="tag tag-f">Fourier</span></td>
+    </tr>
+    <tr>
+      <td>Fouriers teorem</td>
+      <td>$S_f(x_0) = \frac{1}{2}(f(x_0^+)+f(x_0^-))$</td>
+      <td><span class="tag tag-f">Fourier</span></td>
+    </tr>
+    <tr>
+      <td>Kompleks form</td>
+      <td>$c_n=\frac{1}{2\pi}\int_{-\pi}^\pi f e^{-inx}dx$</td>
+      <td><span class="tag tag-f">Fourier</span></td>
+    </tr>
+    <tr>
+      <td>Halvrekker</td>
+      <td>Like → cosinus, Odde → sinus</td>
+      <td><span class="tag tag-f">Fourier</span></td>
+    </tr>
+    </table></div>
+
+    <h2 style="margin-top:32px">Standard Maclaurinrekker</h2>
+    <div class="box thm"><div class="bl">Disse må du ha i hodet</div>
+    <ul>
+    <li>$e^x = \displaystyle\sum_{n=0}^\infty \frac{x^n}{n!}$, $\quad R=\infty$</li>
+    <li>$\sin x = \displaystyle\sum_{n=0}^\infty \frac{(-1)^n x^{2n+1}}{(2n+1)!}$, $\quad R=\infty$</li>
+    <li>$\cos x = \displaystyle\sum_{n=0}^\infty \frac{(-1)^n x^{2n}}{(2n)!}$, $\quad R=\infty$</li>
+    <li>$\dfrac{1}{1-x} = \displaystyle\sum_{n=0}^\infty x^n$, $\quad R=1$</li>
+    <li>$\ln(1+x) = \displaystyle\sum_{n=1}^\infty \frac{(-1)^{n+1}x^n}{n}$, $\quad R=1$</li>
+    <li>$\arctan x = \displaystyle\sum_{n=0}^\infty \frac{(-1)^n x^{2n+1}}{2n+1}$, $\quad R=1$</li>
+    </ul></div>
+
+    <h2>Vanlige Feil</h2>
+    <div class="box warn"><div class="bl">Pass på</div>
+    <ul>
+    <li>Konvergensradius $R$ gjelder for $|x-a|\lt R$ — <strong>sjekk endepunktene separat</strong></li>
+    <li>Taylorrekken til $f$ konvergerer mot $f$ bare hvis $R_N(x)\to 0$ — bevis dette!</li>
+    <li>$\ln(1+x)$: konvergerer i $x=1$ (betinget), divergerer i $x=-1$</li>
+    <li>Fourier-koeffisienter: $a_0$ brukes delt på 2 i rekken: $\frac{a_0}{2}+\cdots$</li>
+    <li>Fouriers teorem gjelder i sprangpunkter — $S_f$ gir gjennomsnittet, ikke $f$-verdien</li>
+    <li>Gibbs: Fourierrekken konvergerer <em>aldri</em> uniformt hvis $f$ har sprang</li>
+    </ul></div>
+
+    <h2>Nyttige identiteter fra Fourier</h2>
+    <div class="box ex"><div class="bl">Klassiske $\pi$-formler via Fourier</div>
+    <ul>
+    <li>$\displaystyle\sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6}$ (sett $x=\pi$ i $f(x)=x^2$)</li>
+    <li>$\displaystyle\sum_{n=1}^\infty \frac{(-1)^{n+1}}{n^2} = \frac{\pi^2}{12}$ (sett $x=0$)</li>
+    <li>$\displaystyle\sum_{n=0}^\infty \frac{(-1)^n}{2n+1} = \frac{\pi}{4}$ (Leibniz, fra $\arctan 1$)</li>
+    </ul></div>
+
+  </div>
+
+  <!-- ══════════ FLASHKORT ══════════ -->
+  <div class="section" id="tab-flash">
+
+    <div class="fc-controls">
+      <span class="fc-progress" id="fc-prog">Kort 1 av 12</span>
+      <button class="fc-btn primary" onclick="fcShuffle()">Bland</button>
+      <button class="fc-btn" onclick="fcReset()">Start på nytt</button>
+    </div>
+
+    <div id="score-view" style="display:none">
+      <div class="score-panel">
+        <h2>Ferdig!</h2>
+        <div class="score-num" id="score-num">0/12</div>
+        <p class="score-sub" id="score-sub">av kortene kunne du</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px">
+          <button class="fc-btn primary" onclick="fcReset()">Ta runden igjen</button>
+          <button class="fc-btn" onclick="fcReviewOnly()">Øv på de vanskelige</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="card-view">
+      <p class="flip-hint">Klikk på kortet for å snu det</p>
+      <div class="card-area">
+        <div class="card" id="fc-card" onclick="fcFlip()">
+          <div class="card-face card-front">
+            <span class="cat-badge" id="fc-cat"></span>
+            <div class="card-label">Begrep / Formel</div>
+            <div class="card-title" id="fc-title"></div>
+            <div class="card-hint" id="fc-hint"></div>
+          </div>
+          <div class="card-face card-back">
+            <span class="cat-badge" id="fc-cat-back"></span>
+            <div class="card-label">Svar</div>
+            <div class="card-body" id="fc-body"></div>
+          </div>
+        </div>
+      </div>
+      <div id="result-row" class="result-row" style="display:none;max-width:640px;margin:0 auto">
+        <button class="res-btn res-knew" onclick="fcMark(true)">Kunne dette ✓</button>
+        <button class="res-btn res-review" onclick="fcMark(false)">Øv mer ↻</button>
+      </div>
+      <div class="dots" id="fc-dots"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function switchTab(id, e) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  e.target.classList.add('active');
+}
+
+const ALL_CARDS = [
+  {
+    title: 'Konvergensradius',
+    hint: 'Formel og hva den betyr',
+    cat: 'Potensrekke', catClass: 'cat-power',
+    body: `$$R = \\lim_{n\\to\\infty}\\left|\\frac{b_n}{b_{n+1}}\\right|$$
+<p>Rekken $\\sum b_n(x-a)^n$ konvergerer absolutt for $|x-a|\\lt R$, divergerer for $|x-a|\\gt R$.</p>
+<p><strong>Husk:</strong> Sjekk endepunktene $x = a\\pm R$ separat!</p>`
+  },
+  {
+    title: 'Leddvis derivasjon',
+    hint: 'Hva skjer med $R$ og hvilken formel?',
+    cat: 'Potensrekke', catClass: 'cat-power',
+    body: `<p>For $f(x)=\\sum_{n=0}^\\infty b_n x^n$:</p>
+$$f'(x) = \\sum_{n=1}^\\infty n b_n x^{n-1}$$
+<p>Konvergensradius $R$ er uendret ved derivasjon.</p>
+<p>Integrasjon kan <em>utvide</em> intervallet til endepunktene.</p>`
+  },
+  {
+    title: 'Taylorrekken',
+    hint: 'Generell formel rundt $a$',
+    cat: 'Taylor', catClass: 'cat-taylor',
+    body: `$$f(x) = \\sum_{n=0}^\\infty \\frac{f^{(n)}(a)}{n!}(x-a)^n$$
+<p>Maclaurin = Taylorrekke med $a=0$.</p>
+<p><strong>Restleddet:</strong> $|R_N(x)| \\leq \\dfrac{M_{N+1}}{(N+1)!}|x-a|^{N+1}$</p>`
+  },
+  {
+    title: 'Maclaurin for $e^x$',
+    hint: 'Rekke og konvergensradius?',
+    cat: 'Taylor', catClass: 'cat-taylor',
+    body: `$$e^x = \\sum_{n=0}^\\infty \\frac{x^n}{n!} = 1 + x + \\frac{x^2}{2!} + \\frac{x^3}{3!} + \\cdots$$
+<p>$R = \\infty$ — gjelder for alle $x$.</p>`
+  },
+  {
+    title: 'Maclaurin for $\\sin x$ og $\\cos x$',
+    hint: 'Skriv opp begge rekkene',
+    cat: 'Taylor', catClass: 'cat-taylor',
+    body: `$$\\sin x = \\sum_{n=0}^\\infty \\frac{(-1)^n x^{2n+1}}{(2n+1)!} = x - \\frac{x^3}{6} + \\frac{x^5}{120} - \\cdots$$
+$$\\cos x = \\sum_{n=0}^\\infty \\frac{(-1)^n x^{2n}}{(2n)!} = 1 - \\frac{x^2}{2} + \\frac{x^4}{24} - \\cdots$$
+<p>Begge har $R=\\infty$.</p>`
+  },
+  {
+    title: 'Maclaurin for $\\ln(1+x)$ og $\\frac{1}{1-x}$',
+    hint: 'Rekke og endepunkter?',
+    cat: 'Taylor', catClass: 'cat-taylor',
+    body: `$$\\frac{1}{1-x} = \\sum_{n=0}^\\infty x^n, \\quad R=1$$
+$$\\ln(1+x) = \\sum_{n=1}^\\infty \\frac{(-1)^{n+1}x^n}{n}, \\quad R=1$$
+<p>$\\ln(1+x)$: konvergerer i $x=1$ (betinget), divergerer i $x=-1$.</p>`
+  },
+  {
+    title: 'Binomialrekken',
+    hint: 'Formel og konvergensintervall',
+    cat: 'Taylor', catClass: 'cat-taylor',
+    body: `$$(1+x)^\\alpha = \\sum_{n=0}^\\infty \\binom{\\alpha}{n}x^n, \\quad |x|\\lt 1$$
+$$\\binom{\\alpha}{n} = \\frac{\\alpha(\\alpha-1)\\cdots(\\alpha-n+1)}{n!}$$
+<p>For heltallig $\\alpha\\geq 0$: endelig sum (vanlig binomialteoremet).</p>`
+  },
+  {
+    title: 'Fourierkoeffisienter',
+    hint: 'Formel for $a_n$ og $b_n$',
+    cat: 'Fourier', catClass: 'cat-fourier',
+    body: `$$a_n = \\frac{1}{\\pi}\\int_{-\\pi}^\\pi f(x)\\cos(nx)\\,dx$$
+$$b_n = \\frac{1}{\\pi}\\int_{-\\pi}^\\pi f(x)\\sin(nx)\\,dx$$
+<p>Like $f$: $b_n=0$. Odde $f$: $a_n=0$.</p>
+<p><strong>Husk:</strong> $a_0/2$ (ikke $a_0$) foran i rekken!</p>`
+  },
+  {
+    title: "Fouriers teorem",
+    hint: 'Hva konvergerer $S_f(x_0)$ mot?',
+    cat: 'Fourier', catClass: 'cat-fourier',
+    body: `<ul>
+<li>$f$ kontinu. i $x_0$: $S_f(x_0) = f(x_0)$</li>
+<li>Sprang i $x_0$: $S_f(x_0) = \\dfrac{f(x_0^+)+f(x_0^-)}{2}$</li>
+<li>$x=\\pm\\pi$: $S_f(\\pm\\pi) = \\dfrac{f(-\\pi^+)+f(\\pi^-)}{2}$</li>
+</ul>
+<p>Utenfor $[-\\pi,\\pi]$: $2\\pi$-periodisk utvidelse.</p>`
+  },
+  {
+    title: 'Konvergenstyper',
+    hint: 'Hierarki og betingelser',
+    cat: 'Fourier', catClass: 'cat-fourier',
+    body: `<p><strong>Uniform</strong> $\\Rightarrow$ <strong>Punktvis</strong> $\\Rightarrow$ <strong>$L^2$</strong></p>
+<ul>
+<li>Uniform: $f$ glatt (ingen sprang)</li>
+<li>Punktvis: stykkevis kontinuerlig</li>
+<li>$L^2$: $\\int|f|^2 dx \\lt \\infty$</li>
+</ul>
+<p><strong>Gibbs:</strong> Ved sprang — ca. 9% overshoot, aldri uniform konvergens.</p>`
+  },
+  {
+    title: 'Halvrekker',
+    hint: 'Hva er like og odde utvidelse?',
+    cat: 'Fourier', catClass: 'cat-fourier',
+    body: `<p>For $f$ på $[0,\\pi]$:</p>
+<ul>
+<li><strong>Like utvidelse</strong> → cosinusrekke: $a_n=\\dfrac{2}{\\pi}\\int_0^\\pi f\\cos(nx)\\,dx$</li>
+<li><strong>Odde utvidelse</strong> → sinusrekke: $b_n=\\dfrac{2}{\\pi}\\int_0^\\pi f\\sin(nx)\\,dx$</li>
+</ul>`
+  },
+  {
+    title: 'Kompleks Fourierrekke',
+    hint: 'Formel for $c_n$ og sammenheng med reelle koeff.',
+    cat: 'Fourier', catClass: 'cat-fourier',
+    body: `$$c_n = \\frac{1}{2\\pi}\\int_{-\\pi}^\\pi f(x)e^{-inx}\\,dx$$
+$$S_f(x) = \\sum_{n=-\\infty}^\\infty c_n e^{inx}$$
+<p>Sammenheng: $a_n = 2\\operatorname{Re}(c_n)$, $b_n = -2\\operatorname{Im}(c_n)$ for $n\\gt 0$; $c_0=a_0/2$.</p>`
+  }
+];
+
+let deck = [], idx = 0, flipped = false, knew = [], review = [];
+
+function fcInit(cards) {
+  deck = cards.slice();
+  idx = 0; flipped = false; knew = []; review = [];
+  document.getElementById('score-view').style.display = 'none';
+  document.getElementById('card-view').style.display = 'block';
+  renderCard(); renderDots();
+}
+function fcReset() { fcInit(ALL_CARDS); }
+function fcShuffle() {
+  const arr = ALL_CARDS.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  fcInit(arr);
+}
+function fcReviewOnly() {
+  if (review.length === 0) { fcReset(); return; }
+  fcInit(review);
+}
+function renderCard() {
+  const c = deck[idx];
+  document.getElementById('fc-card').classList.remove('flipped');
+  document.getElementById('result-row').style.display = 'none';
+  flipped = false;
+  document.getElementById('fc-title').innerHTML = c.title;
+  document.getElementById('fc-hint').innerHTML = c.hint;
+  document.getElementById('fc-cat').className = 'cat-badge ' + c.catClass;
+  document.getElementById('fc-cat').textContent = c.cat;
+  document.getElementById('fc-cat-back').className = 'cat-badge ' + c.catClass;
+  document.getElementById('fc-cat-back').textContent = c.cat;
+  document.getElementById('fc-body').innerHTML = c.body;
+  document.getElementById('fc-prog').textContent = `Kort ${idx + 1} av ${deck.length}`;
+  if (window.renderMathInElement) {
+    renderMathInElement(document.getElementById('fc-card'), {
+      delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError: false
+    });
+  }
+  renderDots();
+}
+function fcFlip() {
+  if (!flipped) {
+    document.getElementById('fc-card').classList.add('flipped');
+    document.getElementById('result-row').style.display = 'flex';
+    flipped = true;
+  }
+}
+function fcMark(didKnow) {
+  if (didKnow) knew.push(deck[idx]);
+  else review.push(deck[idx]);
+  idx++;
+  if (idx >= deck.length) showScore();
+  else renderCard();
+}
+function showScore() {
+  document.getElementById('card-view').style.display = 'none';
+  document.getElementById('score-view').style.display = 'block';
+  const n = knew.length, t = deck.length;
+  document.getElementById('score-num').textContent = `${n}/${t}`;
+  document.getElementById('score-sub').textContent = n === t
+    ? 'av kortene — perfekt!'
+    : `av kortene. ${review.length} kort til øving.`;
+}
+function renderDots() {
+  const c = document.getElementById('fc-dots');
+  c.innerHTML = '';
+  deck.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < idx ? ' seen' : '') + (i === idx ? ' current' : '');
+    d.onclick = () => { idx = i; flipped = false; renderCard(); };
+    c.appendChild(d);
+  });
+}
+
+fcInit(ALL_CARDS);
+</script>
+</body>
+</html>
